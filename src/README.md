@@ -1,39 +1,42 @@
-# Backend (Python)
+# API (Backend) — carpeta `src/`
 
-## Instalar Python en esta carpeta
+Backend en Python con FastAPI: rutas, servicios y conexión a la DB para la venta de comida de animales por kg.
 
-### 1. Abrir terminal en la carpeta `src`
+## Estructura
 
-```bash
-cd c:\Users\agust\raucan-repo\src
+```
+src/
+├── app/
+│   ├── main.py       # Entrada, CORS, registro de routers
+│   ├── db.py         # Conexión a la base de datos (SQLAlchemy)
+│   ├── routers/      # Rutas (endpoints por recurso)
+│   │   └── productos.py
+│   ├── services/     # Lógica de negocio (productos, pedidos, etc.)
+│   │   └── productos.py
+│   ├── models/       # Modelos ORM (tablas)
+│   │   └── producto.py
+│   └── schemas/      # Schemas Pydantic (request/response)
+│       └── producto.py
+├── requirements.txt
+└── .env              # DATABASE_URL (opcional; por defecto SQLite)
 ```
 
-### 2. Crear el entorno virtual
+## Cómo correr
+
+Desde la raíz del repo:
 
 ```bash
-python -m venv venv
-```
-
-### 3. Activar el entorno (PowerShell)
-
-```bash
-.\venv\Scripts\Activate
-```
-
-Verás `(venv)` al inicio de la línea → el entorno está activo.
-
-### 4. Instalar dependencias (cuando las tengas en requirements.txt)
-
-```bash
+cd src
 pip install -r requirements.txt
+uvicorn app.main:app --reload
 ```
 
-### 5. Desactivar el entorno (cuando termines)
+- API: http://127.0.0.1:8000  
+- Docs: http://127.0.0.1:8000/docs  
 
-```bash
-deactivate
-```
+## Base de datos
 
----
-
-**Resumen:** cada vez que quieras trabajar en el backend, entra a `src`, activa con `.\venv\Scripts\Activate` y listo.
+- Por defecto usa **SQLite** (`sqlite:///./local.db`) y crea el archivo en `src/`.
+- Para usar **PostgreSQL** (u otra), creá `.env` en `src/` con:
+  `DATABASE_URL=postgresql://user:pass@host:5432/nombre_db`  
+  e instalá el driver (ej. `psycopg2-binary`).
