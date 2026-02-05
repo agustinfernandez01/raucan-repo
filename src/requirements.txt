@@ -1,0 +1,4 @@
+# Backend dependencies - add your packages here
+# Example:
+# fastapi
+# uvicorn[standard]
