@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -12,13 +13,22 @@ from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
 from app.routers import carrito, login, mascota, pedido, productos, usuarios
 
-# Crear tablas si no existen (al arrancar)
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Crear tablas al arrancar. Si la DB no responde, la app igual inicia."""
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception:
+        pass
+    yield
+
 
 app = FastAPI(
     title="Raucan API",
     description="API para venta de comida de animales por kg",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(

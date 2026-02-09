@@ -24,4 +24,8 @@ class Usuario(Base):
     creado_en = Column(DateTime, nullable=False)
 
     mascotas = relationship("Mascota", back_populates="usuario")
+    # relaciones
+    carrito = relationship("Carrito", back_populates="usuario")
+    pedidos = relationship("Pedido", back_populates="usuario")
+    comentarios = relationship("Comentario", back_populates="usuario")
 

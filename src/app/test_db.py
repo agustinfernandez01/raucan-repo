@@ -1,8 +1,8 @@
-from db import create_engine
-from db import DATABASE_URL
-import os
-
-engine = create_engine(DATABASE_URL)
+"""Prueba de conexión a la DB. Ejecutar desde src: python -m app.test_db  o desde src/app: python test_db.py"""
+try:
+    from app.db import engine
+except ModuleNotFoundError:
+    from db import engine
 
 try:
     with engine.connect() as conn:
