@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
-from app.routers import login, productos, usuarios
+from app.routers import carrito, login, pedido, productos, usuarios
 
 # Crear tablas si no existen (al arrancar)
 Base.metadata.create_all(bind=engine)
@@ -32,6 +32,8 @@ app.add_middleware(
 app.include_router(productos.router, prefix="/productos", tags=["productos"])
 app.include_router(login.router, prefix="/login", tags=["login"])
 app.include_router(usuarios.router, prefix="/usuarios", tags=["usuarios"])
+app.include_router(carrito.router, prefix="/carrito", tags=["carrito"])
+app.include_router(pedido.router, prefix="/pedidos", tags=["pedidos"])
 
 
 @app.get("/health")
