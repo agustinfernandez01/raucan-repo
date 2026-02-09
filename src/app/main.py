@@ -1,9 +1,16 @@
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(env_path)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
-from app.routers import productos
+from app.routers import login, productos, usuarios
 
 # Crear tablas si no existen (al arrancar)
 Base.metadata.create_all(bind=engine)
@@ -23,6 +30,8 @@ app.add_middleware(
 )
 
 app.include_router(productos.router, prefix="/productos", tags=["productos"])
+app.include_router(login.router, prefix="/login", tags=["login"])
+app.include_router(usuarios.router, prefix="/usuarios", tags=["usuarios"])
 
 
 @app.get("/health")

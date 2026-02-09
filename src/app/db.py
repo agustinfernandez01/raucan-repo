@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "sqlite:///./local.db",  # por defecto SQLite para desarrollo
+    "sqlite:///./local.db",  # por defecto SQLite para desarrollo (MySQL vía .env en prod)
 )
 
 engine = create_engine(

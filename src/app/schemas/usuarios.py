@@ -1,0 +1,39 @@
+from pydantic import BaseModel, EmailStr, Field
+from pydantic import ConfigDict
+from datetime import datetime
+from typing import Optional
+
+class UsuarioBase(BaseModel):
+
+    # datos personales
+    nombre: str = Field(min_length=1, max_length=255)
+    apellido: str = Field(min_length=1, max_length=255)
+
+    # datos de contacto
+    email: EmailStr = Field(pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+    telefono: str = Field(min_length=1, max_length=255)
+    direccion: str = Field(min_length=1, max_length=255)
+
+    # datos de seguridad
+    rol: str = Field(min_length=1, max_length=255)
+    activo: bool = Field(default=True)
+
+
+class UsuarioResponse(UsuarioBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+
+class UsuarioCreate(UsuarioBase):
+    password: str = Field(min_length=8, max_length=255)
+    creado_en: datetime = Field(default=datetime.now())
+
+class UsuarioUpdate(UsuarioBase):
+    nombre: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    apellido: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    email: Optional[EmailStr] = Field(default=None, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+    telefono: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    direccion: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    rol: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    activo: Optional[bool] = Field(default=None)
+    actualizado_en: Optional[datetime] = Field(default=datetime.now())
+    password: Optional[str] = Field(default=None, min_length=8, max_length=255)

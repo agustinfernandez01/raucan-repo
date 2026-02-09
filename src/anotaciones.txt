@@ -1,0 +1,24 @@
+jwt :
+
+* si el login es correcto --> genera access_token
+* enviar y verificar
+
+bcrypt : 
+
+* Verificar login (email + pass)
+* guardar y registrar usuario
+
+Pydantic:
+
+* Verifica tipos
+* Convierte datos
+* Rechaza lo inválido
+* Te devuelve datos seguros
+
+proceso de hasheo
+
+usuario escribe hola123 (contraseña) ---> la guarda hasheada ---> vuelve entrar (vuelve a hashear) ---> si el texto es igual
+ENTRA
+
+.\venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload
