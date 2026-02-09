@@ -1,6 +1,8 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Boolean
+from sqlalchemy.orm import relationship
 
 from app.db import Base
+
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -20,4 +22,6 @@ class Usuario(Base):
     activo = Column(Boolean, default=True)
 
     creado_en = Column(DateTime, nullable=False)
+
+    mascotas = relationship("Mascota", back_populates="usuario")
 

@@ -6,3 +6,4 @@ from app.models.carrito import Carrito  # noqa: F401
 from app.models.deposito import Deposito  # noqa: F401
 from app.models.pedido import Pedido, PedidoDetalle  # noqa: F401
 from app.models.comentario import Comentario  # noqa: F401
+from app.models.mascota import Mascota  # noqa: F401

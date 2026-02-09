@@ -16,6 +16,12 @@ class PedidoDetalleCreate(PedidoDetalleBase):
     """Schema para un ítem al crear/actualizar pedido."""
 
 
+class PedidoDetalleUpdate(BaseModel):
+    """Schema para actualizar un ítem del detalle (cantidad o precio)."""
+    cantidad_kg: float | None = None
+    precio_por_kg: float | None = None
+
+
 class PedidoDetalleResponse(BaseModel):
     """Ítem de un pedido en la respuesta."""
     model_config = ConfigDict(from_attributes=True)
