@@ -32,7 +32,7 @@ class UsuarioPatch(UsuarioBase):
     telefono: Optional[str] = Field(default=None, min_length=1, max_length=255)
     direccion: Optional[str] = Field(default=None, min_length=1, max_length=255)
     rol: Optional[str] = Field(default=None, min_length=1, max_length=255)
-    activo: Optional[bool] = Field(default=None)
+    activo: Optional[bool] = Field(default=None)    
     actualizado_en: Optional[datetime] = Field(default=datetime.now())
     password: Optional[str] = Field(default=None, min_length=8, max_length=255)
 
@@ -45,3 +45,9 @@ class UsuarioUpdate(UsuarioBase):
 class UsuarioResponse(UsuarioBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+#RESPUESTA PARA EL COMENTARIO (tabla comentarios)
+class UsuarioComent(BaseModel):
+    id: int
+    nombre: str
+    model_config = ConfigDict(from_attributes=True)
