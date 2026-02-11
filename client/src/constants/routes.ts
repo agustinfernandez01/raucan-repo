@@ -15,10 +15,24 @@ export const ROUTES = {
   NOT_FOUND: '*',
 } as const;
 
+/** Rutas del panel de administración (prefijo /admin) */
+export const ADMIN_ROUTES = {
+  DASHBOARD: '/admin',
+  PEDIDOS: '/admin/pedidos',
+  PEDIDO_DETAIL: '/admin/pedidos/:id',
+  PRODUCTOS: '/admin/productos',
+  USUARIOS: '/admin/usuarios',
+  STOCK: '/admin/stock',
+} as const;
+
 export function productDetailPath(id: string): string {
   return `/productos/${id}`;
 }
 
 export function pedidoDetailPath(id: string): string {
   return `/pedidos/${id}`;
+}
+
+export function adminPedidoDetailPath(id: string): string {
+  return `/admin/pedidos/${id}`;
 }

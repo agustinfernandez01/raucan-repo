@@ -115,3 +115,13 @@ export const ROUTES = {
 5. **Rutas**: centralizadas en `constants/routes.ts` y usadas en el router y en `Link`/`useNavigate`.
 
 Con esta estructura podés escalar agregando nuevas páginas o dominios sin desorden, y mantener una correspondencia clara con la API.
+
+---
+
+## Área de administración
+
+- **Rutas:** prefijo `/admin` (dashboard, pedidos, productos, usuarios, stock).
+- **Protección:** `AdminRoute` exige usuario logueado y `rol === 'admin'`. Si no, redirige a login o home.
+- **Layout:** `AdminLayout` con sidebar (Dashboard, Pedidos, Productos, Usuarios, Stock) y enlace "Ver sitio".
+- **Header público:** si el usuario es admin, se muestra el enlace "Admin" que lleva a `/admin`.
+- **Desarrollo:** para probar como admin sin depender del backend, definir `VITE_DEV_ADMIN=true` en `.env` del cliente; al iniciar sesión se asignará rol admin.

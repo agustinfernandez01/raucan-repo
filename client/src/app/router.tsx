@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import Layout from '../components/layout/Layout';
+import AdminRoute from '../components/admin/AdminRoute';
+import AdminLayout from '../components/layout/AdminLayout';
 import HomePage from '../pages/home/HomePage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
@@ -11,6 +13,12 @@ import PedidosPage from '../pages/pedidos/PedidosPage';
 import PedidoDetailPage from '../pages/pedidos/PedidoDetailPage';
 import PerfilPage from '../pages/perfil/PerfilPage';
 import MascotasPage from '../pages/perfil/MascotasPage';
+import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
+import AdminPedidosPage from '../pages/admin/AdminPedidosPage';
+import AdminPedidoDetailPage from '../pages/admin/AdminPedidoDetailPage';
+import AdminProductosPage from '../pages/admin/AdminProductosPage';
+import AdminUsuariosPage from '../pages/admin/AdminUsuariosPage';
+import AdminStockPage from '../pages/admin/AdminStockPage';
 import NotFoundPage from '../pages/not-found/NotFoundPage';
 
 const router = createBrowserRouter([
@@ -28,6 +36,23 @@ const router = createBrowserRouter([
       { path: 'pedidos/:id', element: <PedidoDetailPage /> },
       { path: 'perfil', element: <PerfilPage /> },
       { path: 'perfil/mascotas', element: <MascotasPage /> },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <AdminRoute />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <AdminDashboardPage /> },
+          { path: 'pedidos', element: <AdminPedidosPage /> },
+          { path: 'pedidos/:id', element: <AdminPedidoDetailPage /> },
+          { path: 'productos', element: <AdminProductosPage /> },
+          { path: 'usuarios', element: <AdminUsuariosPage /> },
+          { path: 'stock', element: <AdminStockPage /> },
+        ],
+      },
     ],
   },
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> },
