@@ -3,8 +3,9 @@ from pydantic import ConfigDict
 from datetime import datetime
 from typing import Optional
 
+#INTERFAZ BASE
 class UsuarioBase(BaseModel):
-
+    """Schema para crear un usuario."""
     # datos personales
     nombre: str = Field(min_length=1, max_length=255)
     apellido: str = Field(min_length=1, max_length=255)
@@ -18,16 +19,13 @@ class UsuarioBase(BaseModel):
     rol: str = Field(min_length=1, max_length=255)
     activo: bool = Field(default=True)
 
-
-class UsuarioResponse(UsuarioBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-
+#CREAR USUARIO
 class UsuarioCreate(UsuarioBase):
     password: str = Field(min_length=8, max_length=255)
     creado_en: datetime = Field(default=datetime.now())
 
-class UsuarioUpdate(UsuarioBase):
+#ACTUALIZAR USUARIO (PARCIAL)
+class UsuarioPatch(UsuarioBase):
     nombre: Optional[str] = Field(default=None, min_length=1, max_length=255)
     apellido: Optional[str] = Field(default=None, min_length=1, max_length=255)
     email: Optional[EmailStr] = Field(default=None, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
@@ -37,3 +35,13 @@ class UsuarioUpdate(UsuarioBase):
     activo: Optional[bool] = Field(default=None)
     actualizado_en: Optional[datetime] = Field(default=datetime.now())
     password: Optional[str] = Field(default=None, min_length=8, max_length=255)
+
+#ACTUALIZAR USUARIO (TODO)
+class UsuarioUpdate(UsuarioBase):
+    password: str = Field(min_length=8, max_length=255)
+    actualizado_en: datetime = Field(default=datetime.now())
+
+#RESPUESTA
+class UsuarioResponse(UsuarioBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int

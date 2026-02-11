@@ -9,12 +9,18 @@ class ProductoBase(BaseModel):
     imagen_url: str | None = None
     activo: bool = True
 
+class ProductoResponse(ProductoBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
 
 class ProductoCreate(ProductoBase):
     """Schema para crear un producto."""
 
+class ProductoUpdate(ProductoBase):
+    """Schema para actualizar un producto (todos los campos obligatorios)."""
+    pass
 
-class ProductoUpdate(BaseModel):
+class ProductoPatch(BaseModel):
     """Schema para actualizar un producto (todos los campos opcionales)."""
     nombre: str | None = None
     precio_por_kg: float | None = None
@@ -24,6 +30,7 @@ class ProductoUpdate(BaseModel):
     activo: bool | None = None
 
 
-class ProductoResponse(ProductoBase):
-    model_config = ConfigDict(from_attributes=True)
+class ProductoSimple(BaseModel):
     id: int
+    nombre: str
+    model_config = ConfigDict(from_attributes=True)

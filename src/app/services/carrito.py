@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models import carrito as models_carrito
-from app.models import producto as models_producto
+import app.models.productos as models_producto
 from app.schemas.carrito import CarritoCreate, CarritoUpdate
 
 
@@ -42,8 +42,8 @@ def agregar_item(db: Session, datos: CarritoCreate):
     del producto si no se envía.
     """
     producto = (
-        db.query(models_producto.Producto)
-        .filter(models_producto.Producto.id == datos.producto_id)
+        db.query(models_producto.Productos)
+        .filter(models_producto.Productos.id == datos.producto_id)
         .first()
     )
     if producto is None:

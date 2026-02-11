@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 from app.db import Base
 
 
-class Producto(Base):
+class Productos(Base):
     """Producto: comida de animales vendida por kg."""
 
     __tablename__ = "productos"
@@ -19,8 +19,6 @@ class Producto(Base):
     activo = Column(Boolean, default=True, nullable=False)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
-
+    # relaciones
     carrito = relationship("Carrito", back_populates="producto")
-    depositos = relationship("Deposito", back_populates="producto")
     pedido_detalles = relationship("PedidoDetalle", back_populates="producto")
-    comentarios = relationship("Comentario", back_populates="producto")
