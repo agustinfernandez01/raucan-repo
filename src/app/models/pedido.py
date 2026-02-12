@@ -23,7 +23,6 @@ class Pedido(Base):
 
     usuario = relationship("Usuario", back_populates="pedidos")
     detalles = relationship("PedidoDetalle", back_populates="pedido", cascade="all, delete-orphan")
-    comentarios = relationship("Comentario", back_populates="pedido")
 
 
 class PedidoDetalle(Base):

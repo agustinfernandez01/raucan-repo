@@ -26,6 +26,7 @@ class UsuarioCreate(UsuarioBase):
 
 #ACTUALIZAR USUARIO (PARCIAL)
 class UsuarioPatch(UsuarioBase):
+    model_config = ConfigDict(from_attributes=True)
     nombre: Optional[str] = Field(default=None, min_length=1, max_length=255)
     apellido: Optional[str] = Field(default=None, min_length=1, max_length=255)
     email: Optional[EmailStr] = Field(default=None, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
@@ -51,3 +52,5 @@ class UsuarioComent(BaseModel):
     id: int
     nombre: str
     model_config = ConfigDict(from_attributes=True)
+
+

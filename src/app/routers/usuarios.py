@@ -3,19 +3,27 @@ from sqlalchemy.orm import Session
 #db
 from app.db import get_db
 #users schemas
-from app.schemas.usuarios import UsuarioCreate, UsuarioUpdate, UsuarioResponse
+from app.schemas.usuarios import UsuarioCreate, UsuarioUpdate, UsuarioResponse, UsuarioPatch
 #users services
 from app.services import usuarios as svc_usuarios
 
 router = APIRouter()
 
-#obtener usuario por id
+#obtener usuarios
 @router.get("/get", response_model=list[UsuarioResponse])
 def listar_usuarios(db: Session = Depends(get_db)):
     listado_usuarios = svc_usuarios.getAll_usuarios(db)
     if not listado_usuarios:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontraron usuarios")
     return listado_usuarios
+
+#obtener usuario por id
+@router.get("/get/{usuario_id}", response_model=UsuarioResponse)
+def get_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    usuario = svc_usuarios.get_usuario(db, usuario_id)
+    if not usuario:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado")
+    return usuario
 
 #crear usuario
 @router.post("/post", response_model=UsuarioResponse) 

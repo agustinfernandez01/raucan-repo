@@ -22,3 +22,10 @@ ENTRA
 
 .\venv\Scripts\Activate.ps1
 uvicorn app.main:app --reload
+
+
+
+usuarios 
+get - listo
+get por id - listo
+post - 
