@@ -28,4 +28,9 @@ uvicorn app.main:app --reload
 usuarios 
 get - listo
 get por id - listo
-post - 
+post - listo
+put - listo
+patch - listo
+
+productos
+get -

@@ -1,0 +1,197 @@
+-- =========================
+-- 1) USUARIOS
+-- =========================
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100),
+    telefono VARCHAR(30) NOT NULL,
+    direccion VARCHAR(255),
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    rol VARCHAR(50) DEFAULT 'cliente',
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB;
+
+-- =========================
+-- 2) LOGIN
+-- =========================
+CREATE TABLE login (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    token VARCHAR(100) NOT NULL,
+    expirado_en DATETIME,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_login_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================
+-- 3) MASCOTAS
+-- =========================
+CREATE TABLE mascota (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    raza VARCHAR(100),
+    edad VARCHAR(50),
+    peso_kg DECIMAL(5,2),
+    alergias_observaciones TEXT,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_mascotas_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================
+-- 4) CATEGORIA PRODUCTO
+-- =========================
+CREATE TABLE categoria_producto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE,
+    descripcion TEXT,
+    slug VARCHAR(120) NOT NULL UNIQUE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en DATETIME NOT NULL
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================
+-- 5) PRODUCTOS
+-- =========================
+CREATE TABLE productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    descripcion TEXT,
+    precio_por_kg DECIMAL(10,2) NOT NULL,
+    categoria_id INT NOT NULL,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en DATETIME NOT NULL
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_productos_categoria
+        FOREIGN KEY (categoria_id)
+        REFERENCES categoria_producto(id)
+) ENGINE=InnoDB;
+
+-- =========================
+-- 6) CARRITO
+-- =========================
+CREATE TABLE carrito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad_kg DECIMAL(6,2) NOT NULL,
+    precio_por_kg DECIMAL(10,2),
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_carrito_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_carrito_producto
+        FOREIGN KEY (producto_id)
+        REFERENCES productos(id)
+) ENGINE=InnoDB;
+
+-- =========================
+-- 7) PEDIDOS
+-- =========================
+CREATE TABLE pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    estado VARCHAR(30) NOT NULL DEFAULT 'pendiente',
+    total DECIMAL(10,2) NOT NULL DEFAULT 0,
+    direccion_entrega TEXT,
+    mensaje_enviado TEXT,
+    canal_mensaje VARCHAR(30),
+    notas_internas TEXT,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en DATETIME NOT NULL
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_pedidos_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+) ENGINE=InnoDB;
+
+-- =========================
+-- 8) DETALLE PEDIDO
+-- =========================
+CREATE TABLE pedido_detalle (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad_kg DECIMAL(10,2) NOT NULL,
+    precio_por_kg DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2),
+    CONSTRAINT fk_pedido_detalle_pedido
+        FOREIGN KEY (pedido_id)
+        REFERENCES pedidos(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_pedido_detalle_producto
+        FOREIGN KEY (producto_id)
+        REFERENCES productos(id)
+) ENGINE=InnoDB;
+
+-- =========================
+-- 9) DEPOSITO (AGREGADA)
+-- =========================
+CREATE TABLE deposito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(100) NOT NULL,
+    ubicacion VARCHAR(100) NOT NULL,
+    estado boolean,
+    descripcion TEXT,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en DATETIME NOT NULL
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================
+-- 10) STOCK DEPOSITO (TU TABLA NUEVA)
+-- =========================
+CREATE TABLE stock_deposito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_producto INT NOT NULL,
+    id_deposito INT NOT NULL,
+    cantidad_producto FLOAT NOT NULL,
+    descripcion VARCHAR(100) NOT NULL,
+    actualizado_en DATETIME DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_stock_producto
+        FOREIGN KEY (id_producto)
+        REFERENCES productos(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_stock_deposito
+        FOREIGN KEY (id_deposito)
+        REFERENCES deposito(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================
+-- 11) COMENTARIOS
+-- =========================
+CREATE TABLE comentarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    tipo VARCHAR(50),
+    contenido TEXT NOT NULL,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_comentarios_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+SET FOREIGN_KEY_CHECKS = 1;

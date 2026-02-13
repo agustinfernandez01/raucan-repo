@@ -15,7 +15,6 @@ class Producto(Base):
     descripcion = Column(Text, nullable=True)
     precio_por_kg = Column(Float, nullable=False)
     categoria = Column(String(100), nullable=True)  # perro, gato, snack
-    imagen_url = Column(String(500), nullable=True)
     activo = Column(Boolean, default=True, nullable=False)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())

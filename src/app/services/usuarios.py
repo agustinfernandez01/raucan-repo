@@ -29,7 +29,7 @@ def create_usuario(db: Session, usuario: UsuarioCreate):
         nombre=usuario.nombre,
         apellido=usuario.apellido,
         email=usuario.email,
-        password_hash=hash_password(usuario.password), 
+        password_hash=hash_password(usuario.password_hash), 
         telefono=usuario.telefono,
         direccion=usuario.direccion,
         rol=usuario.rol,

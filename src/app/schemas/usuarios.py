@@ -21,7 +21,7 @@ class UsuarioBase(BaseModel):
 
 #CREAR USUARIO
 class UsuarioCreate(UsuarioBase):
-    password: str = Field(min_length=8, max_length=255)
+    password_hash: str = Field(min_length=8, max_length=255)
     creado_en: datetime = Field(default=datetime.now())
 
 #ACTUALIZAR USUARIO (PARCIAL)
