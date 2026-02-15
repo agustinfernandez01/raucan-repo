@@ -16,6 +16,7 @@ class Producto(Base):
     precio_por_kg = Column(Float, nullable=False)
     categoria = Column(String(100), nullable=True)  # perro, gato, snack
     activo = Column(Boolean, default=True, nullable=False)
+    imagen_url = Column(String(255), nullable=True)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
     # relaciones
