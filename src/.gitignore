@@ -23,3 +23,10 @@ build/
 .vscode/
 *.swp
 *.swo
+
+# DB
+
+db.py
+
+package-lock.json
+package.json

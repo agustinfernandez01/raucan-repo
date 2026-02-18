@@ -83,8 +83,8 @@ def actualizar_deposito(db: Session, deposito_id: int, deposito: DepositoUpdate)
 
 
 #eliminar un deposito
-def eliminar_deposito(db: Session, deposito: IDeposito) -> bool:
-    deposito_actual = db.query(Deposito).filter(Deposito.id == deposito.id).first()
+def eliminar_deposito(db: Session, deposito_id: int) -> bool:
+    deposito_actual = db.query(Deposito).filter(Deposito.id == deposito_id).first()
     if not deposito_actual:
         raise ValueError("No se encontró el deposito")
     db.delete(deposito_actual)

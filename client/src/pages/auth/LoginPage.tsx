@@ -1,13 +1,34 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [telefono, setTelefono] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Login attempt:', { email, password });
+    
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/login/auth", {
+        email: email,
+        password: password,
+        telefono: telefono
+      });
+      if (!response) {
+        console.error("Error en la respuesta del servidor:", response);
+        setError("Datos de inicio de sesión incorrectos. Por favor, verifica tu correo, teléfono y contraseña.");
+        return;
+      }
+      return response.data; // Devuelve los datos de la respuesta
+
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+    }
     // Aquí iría tu lógica de autenticación
   };
 
@@ -39,6 +60,7 @@ const Login: React.FC = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+
             {/* Email Input */}
             <div>
               <label 
@@ -55,6 +77,25 @@ const Login: React.FC = () => {
                 required
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
                 placeholder="tu@email.com"
+              />
+            </div>
+
+            {/* Teléfono Input */}
+            <div>
+              <label
+                htmlFor="telefono"
+                className="block text-sm font-medium text-[#4d4d4d] mb-2"
+              >
+                Teléfono
+              </label>
+              <input
+                id="telefono"
+                type="tel"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+                required
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
+                placeholder="Ej: 1123456789"
               />
             </div>
 
@@ -94,6 +135,7 @@ const Login: React.FC = () => {
                 </button>
               </div>
             </div>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
             {/* Remember me & Forgot password */}
             <div className="flex items-center justify-between text-sm">
