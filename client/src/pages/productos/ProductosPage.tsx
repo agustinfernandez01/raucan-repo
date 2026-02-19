@@ -1,375 +1,228 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
-interface Producto {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio_por_kg: number;
-  categoria: string;
-  activo: boolean;
-}
+const productos = [
+  // Perros
+  { id: 1, nombre: "Croquetas Premium Adulto", descripcion: "Fórmula equilibrada con pollo y arroz para perros adultos", precio: 1250.00, categoria: "Perros", subcategoria: "Alimento", activo: true, emoji: "🦴" },
+  { id: 2, nombre: "Collar Ajustable Cuero", descripcion: "Collar de cuero genuino con hebilla metálica resistente", precio: 890.00, categoria: "Perros", subcategoria: "Accesorios", activo: true, emoji: "🐾" },
+  { id: 3, nombre: "Shampoo Hipoalergénico", descripcion: "Shampoo suave para pieles sensibles, sin parabenos", precio: 540.00, categoria: "Perros", subcategoria: "Higiene", activo: true, emoji: "🐾" },
+  { id: 4, nombre: "Juguete Cuerda Resistente", descripcion: "Cuerda de algodón trenzado para juegos de tira y afloja", precio: 320.00, categoria: "Perros", subcategoria: "Juguetes", activo: true, emoji: "🎾" },
+  // Gatos
+  { id: 5, nombre: "Alimento Húmedo Atún", descripcion: "Pâté de atún en salsa, rico en proteínas y omega-3", precio: 420.00, categoria: "Gatos", subcategoria: "Alimento", activo: true, emoji: "🐟" },
+  { id: 6, nombre: "Rascador Torre Sisal", descripcion: "Torre multinivel con rascador de sisal y cama incorporada", precio: 3200.00, categoria: "Gatos", subcategoria: "Muebles", activo: true, emoji: "🐱" },
+  { id: 7, nombre: "Arena Aglomerante Premium", descripcion: "Arena con carbón activo, máximo control de olores 30 días", precio: 780.00, categoria: "Gatos", subcategoria: "Higiene", activo: true, emoji: "✨" },
+  { id: 8, nombre: "Plumas Interactivas", descripcion: "Varita con plumas naturales para estimular el instinto cazador", precio: 280.00, categoria: "Gatos", subcategoria: "Juguetes", activo: true, emoji: "🪶" },
+  // Aves
+  { id: 9, nombre: "Mix Semillas Tropical", descripcion: "Mezcla de semillas exóticas para loros y cotorras", precio: 560.00, categoria: "Aves", subcategoria: "Alimento", activo: true, emoji: "🌿" },
+  { id: 10, nombre: "Jaula Espaciosa Inox", descripcion: "Jaula de acero inoxidable con comederos y bebederos incluidos", precio: 5400.00, categoria: "Aves", subcategoria: "Hábitat", activo: true, emoji: "🏠" },
+  // Peces
+  { id: 11, nombre: "Alimento en Escamas", descripcion: "Escamas flotantes con vitaminas para peces tropicales", precio: 340.00, categoria: "Peces", subcategoria: "Alimento", activo: true, emoji: "🐠" },
+  { id: 12, nombre: "Filtro Acuario 200L", descripcion: "Filtro de alta eficiencia para acuarios de hasta 200 litros", precio: 2100.00, categoria: "Peces", subcategoria: "Equipamiento", activo: true, emoji: "💧" },
+  // Pequeños Animales
+  { id: 13, nombre: "Heno Timothy Premium", descripcion: "Heno de primera calidad para conejos y cobayas", precio: 480.00, categoria: "Pequeños Animales", subcategoria: "Alimento", activo: true, emoji: "🌾" },
+  { id: 14, nombre: "Rueda de Ejercicio Silenciosa", descripcion: "Rueda giratoria silenciosa para hámsters y chinchillas", precio: 760.00, categoria: "Pequeños Animales", subcategoria: "Juguetes", activo: true, emoji: "⚙️" },
+];
 
-const Productos: React.FC = () => {
-  // Datos de ejemplo
-  const [productos, setProductos] = useState<Producto[]>([
-    {
-      id: 1,
-      nombre: 'Manzana Red Delicious',
-      descripcion: 'Manzanas frescas y crujientes',
-      precio_por_kg: 450.00,
-      categoria: 'Frutas',
-      activo: true
-    },
-    {
-      id: 2,
-      nombre: 'Tomate Perita',
-      descripcion: 'Tomates maduros ideales para salsa',
-      precio_por_kg: 380.50,
-      categoria: 'Verduras',
-      activo: true
-    },
-    {
-      id: 3,
-      nombre: 'Banana',
-      descripcion: 'Bananas dulces y nutritivas',
-      precio_por_kg: 320.00,
-      categoria: 'Frutas',
-      activo: false
-    },
-    {
-      id: 4,
-      nombre: 'Lechuga',
-      descripcion: 'Lechuga fresca y verde',
-      precio_por_kg: 280.00,
-      categoria: 'Verduras',
-      activo: true
-    },
-    {
-      id: 5,
-      nombre: 'Naranja',
-      descripcion: 'Naranjas jugosas para jugo',
-      precio_por_kg: 350.00,
-      categoria: 'Frutas',
-      activo: true
-    }
-  ]);
+const categorias = [
+  { id: "todas", label: "Todo", icon: "🐾" },
+  { id: "Perros", label: "Perros", icon: "🐶" },
+  { id: "Gatos", label: "Gatos", icon: "🐱" },
+  { id: "Aves", label: "Aves", icon: "🦜" },
+  { id: "Peces", label: "Peces", icon: "🐠" },
+  { id: "Pequeños Animales", label: "Pequeños", icon: "🐹" },
+];
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategoria, setFilterCategoria] = useState('todas');
-  const [filterActivo, setFilterActivo] = useState('todos');
+const subcategoriasColor: Record<string, { bg: string; text: string }> = {
+  Alimento: { bg: "#fff3e0", text: "#e65100" },
+  Accesorios: { bg: "#e8f5e9", text: "#2e7d32" },
+  Higiene: { bg: "#e3f2fd", text: "#1565c0" },
+  Juguetes: { bg: "#fce4ec", text: "#880e4f" },
+  Muebles: { bg: "#f3e5f5", text: "#6a1b9a" },
+  Hábitat: { bg: "#e0f2f1", text: "#00695c" },
+  Equipamiento: { bg: "#e8eaf6", text: "#283593" },
+};
 
-  // Filtrar productos
-  const productosFiltrados = productos.filter(producto => {
-    const matchSearch = producto.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       producto.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchCategoria = filterCategoria === 'todas' || producto.categoria === filterCategoria;
-    const matchActivo = filterActivo === 'todos' || 
-                       (filterActivo === 'activos' && producto.activo) ||
-                       (filterActivo === 'inactivos' && !producto.activo);
-    
-    return matchSearch && matchCategoria && matchActivo;
+export default function CatalogoMascotas() {
+  const [categoriaActiva, setCategoriaActiva] = useState("todas");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [carritoCount, setCarritoCount] = useState(0);
+  const [agregados, setAgregados] = useState<AgregadosState>({});
+
+  const productosFiltrados = productos.filter((p) => {
+    const matchCat = categoriaActiva === "todas" || p.categoria === categoriaActiva;
+    const matchSearch =
+      p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchCat && matchSearch;
   });
 
-  const toggleActivo = (id: number) => {
-    setProductos(productos.map(p => 
-      p.id === id ? { ...p, activo: !p.activo } : p
-    ));
-  };
+  interface Producto {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    categoria: string;
+    subcategoria: string;
+    activo: boolean;
+    emoji: string;
+  }
 
-  const handleDelete = (id: number) => {
-    if (window.confirm('¿Estás seguro de eliminar este producto?')) {
-      setProductos(productos.filter(p => p.id !== id));
-    }
+  interface AgregadosState {
+    [key: number]: boolean;
+  }
+
+  const handleAgregar = (id: number): void => {
+    setCarritoCount((c: number) => c + 1);
+    setAgregados((prev: AgregadosState) => ({ ...prev, [id]: true }));
+    setTimeout(() => setAgregados((prev: AgregadosState) => ({ ...prev, [id]: false })), 1200);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f5f7ff] to-[#fff9f0] p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-semibold text-[#4d4d4d]">Productos</h1>
-              <p className="text-gray-500 mt-1">Gestiona tu inventario de productos</p>
-            </div>
-            <button className="px-6 py-2.5 bg-[#8896fc] text-white font-medium rounded-lg hover:bg-opacity-90 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Nuevo Producto
-            </button>
+    <div style={{ fontFamily: "'Nunito', 'Segoe UI', sans-serif", background: "linear-gradient(135deg, #f5f7ff 0%, #fff9f0 100%)", minHeight: "100vh" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .cat-btn { border: none; cursor: pointer; transition: all 0.2s; }
+        .cat-btn:hover { transform: translateY(-2px); }
+        .cat-btn.active { transform: translateY(-2px); }
+        .card { transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(136,150,252,0.18); }
+        .add-btn { border: none; cursor: pointer; transition: all 0.2s; }
+        .add-btn:hover { opacity: 0.88; transform: scale(1.04); }
+        .add-btn.added { background: #22c55e !important; }
+        .search-input:focus { outline: none; border-color: #8896fc; box-shadow: 0 0 0 3px rgba(136,150,252,0.2); }
+        .carrito-badge { animation: pop 0.3s; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+        @media (max-width: 640px) {
+          .header-inner { flex-direction: column; gap: 12px; align-items: flex-start !important; }
+          .cat-scroll { overflow-x: auto; padding-bottom: 8px; }
+          .cat-scroll::-webkit-scrollbar { height: 4px; }
+          .cat-scroll::-webkit-scrollbar-thumb { background: #8896fc44; border-radius: 4px; }
+          .grid-productos { grid-template-columns: 1fr 1fr !important; }
+          .search-row { flex-direction: column; }
+        }
+        @media (max-width: 400px) {
+          .grid-productos { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
+      <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 20px" }}>
+
+        {/* Hero */}
+        <div style={{ background: "linear-gradient(135deg, #8896fc 0%, #a78bfa 100%)", borderRadius: 20, padding: "32px 36px", marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 6 }}>CATÁLOGO DE PRODUCTOS</div>
+            <h1 style={{ color: "white", fontSize: 28, fontWeight: 900, lineHeight: 1.2, marginBottom: 8 }}>Todo lo que tu mascota<br />necesita 🐾</h1>
+            <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, maxWidth: 360 }}>Encontrá alimentos, accesorios, juguetes y más para perros, gatos, aves y pequeños amigos.</p>
           </div>
+          <div style={{ fontSize: 80, opacity: 0.9, lineHeight: 1 }}>🐶🐱🦜🐹</div>
+        </div>
 
-          {/* Filters */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Search */}
-              <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-[#4d4d4d] mb-2">
-                  Buscar
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Buscar por nombre o descripción..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
-                  />
-                  <svg 
-                    className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Categoria Filter */}
-              <div>
-                <label className="block text-sm font-medium text-[#4d4d4d] mb-2">
-                  Categoría
-                </label>
-                <select
-                  value={filterCategoria}
-                  onChange={(e) => setFilterCategoria(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none bg-white"
+        {/* Categorias */}
+        <div className="cat-scroll" style={{ marginBottom: 28 }}>
+          <div style={{ display: "flex", gap: 10, width: "max-content" }}>
+            {categorias.map((cat) => {
+              const isActive = categoriaActiva === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  className={`cat-btn${isActive ? " active" : ""}`}
+                  onClick={() => setCategoriaActiva(cat.id)}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: 50,
+                    fontFamily: "inherit",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    background: isActive ? "#8896fc" : "white",
+                    color: isActive ? "white" : "#6b7280",
+                    boxShadow: isActive ? "0 4px 16px rgba(136,150,252,0.35)" : "0 2px 8px rgba(0,0,0,0.07)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  <option value="todas">Todas las categorías</option>
-                  <option value="Frutas">Frutas</option>
-                  <option value="Verduras">Verduras</option>
-                  <option value="Carnes">Carnes</option>
-                  <option value="Lácteos">Lácteos</option>
-                </select>
-              </div>
-
-              {/* Estado Filter */}
-              <div>
-                <label className="block text-sm font-medium text-[#4d4d4d] mb-2">
-                  Estado
-                </label>
-                <select
-                  value={filterActivo}
-                  onChange={(e) => setFilterActivo(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none bg-white"
-                >
-                  <option value="todos">Todos</option>
-                  <option value="activos">Activos</option>
-                  <option value="inactivos">Inactivos</option>
-                </select>
-              </div>
-            </div>
+                  <span style={{ fontSize: 18 }}>{cat.icon}</span>
+                  {cat.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Total Productos</p>
-                <p className="text-2xl font-semibold text-[#4d4d4d] mt-1">{productos.length}</p>
-              </div>
-              <div className="p-3 bg-[#8896fc] bg-opacity-10 rounded-lg">
-                <svg className="w-6 h-6 text-[#8896fc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Activos</p>
-                <p className="text-2xl font-semibold text-green-600 mt-1">
-                  {productos.filter(p => p.activo).length}
-                </p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Inactivos</p>
-                <p className="text-2xl font-semibold text-red-600 mt-1">
-                  {productos.filter(p => !p.activo).length}
-                </p>
-              </div>
-              <div className="p-3 bg-red-100 rounded-lg">
-                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Categorías</p>
-                <p className="text-2xl font-semibold text-[#ffa9e0] mt-1">
-                  {new Set(productos.map(p => p.categoria)).size}
-                </p>
-              </div>
-              <div className="p-3 bg-[#ffa9e0] bg-opacity-10 rounded-lg">
-                <svg className="w-6 h-6 text-[#ffa9e0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-              </div>
-            </div>
-          </div>
+        {/* Resultados count */}
+        <div style={{ marginBottom: 20, color: "#9ca3af", fontSize: 13, fontWeight: 600 }}>
+          {productosFiltrados.length} producto{productosFiltrados.length !== 1 ? "s" : ""} encontrado{productosFiltrados.length !== 1 ? "s" : ""}
+          {categoriaActiva !== "todas" && <span style={{ color: "#8896fc" }}> en {categoriaActiva}</span>}
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nombre
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Descripción
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Precio/Kg
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Categoría
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Estado
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {productosFiltrados.length > 0 ? (
-                  productosFiltrados.map((producto) => (
-                    <tr key={producto.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                        #{producto.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-[#4d4d4d]">{producto.nombre}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500 max-w-xs truncate">
-                          {producto.descripcion}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-semibold text-[#8896fc]">
-                          ${producto.precio_por_kg.toFixed(2)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#8896fc] bg-opacity-10 text-[#8896fc]">
-                          {producto.categoria}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() => toggleActivo(producto.id)}
-                          className="relative inline-flex items-center"
-                        >
-                          {producto.activo ? (
-                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                              </svg>
-                              Activo
-                            </span>
-                          ) : (
-                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                              </svg>
-                              Inactivo
-                            </span>
-                          )}
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end gap-2">
-                          <button className="text-[#8896fc] hover:text-[#ffa9e0] transition-colors p-2 hover:bg-[#8896fc] hover:bg-opacity-10 rounded-lg">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          </button>
-                          <button className="text-[#8896fc] hover:text-[#ffa9e0] transition-colors p-2 hover:bg-[#8896fc] hover:bg-opacity-10 rounded-lg">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(producto.id)}
-                            className="text-red-600 hover:text-red-800 transition-colors p-2 hover:bg-red-50 rounded-lg"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center">
-                        <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                        </svg>
-                        <p className="text-gray-500 text-lg font-medium">No se encontraron productos</p>
-                        <p className="text-gray-400 text-sm mt-1">Intenta cambiar los filtros de búsqueda</p>
+        {/* Grid productos */}
+        {productosFiltrados.length > 0 ? (
+          <div className="grid-productos" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
+            {productosFiltrados.map((prod) => {
+              const subColor = subcategoriasColor[prod.subcategoria] || { bg: "#f3f4f6", text: "#6b7280" };
+              const isAdded = agregados[prod.id];
+              return (
+                <div key={prod.id} className="card" style={{ background: "white", borderRadius: 18, boxShadow: "0 4px 20px rgba(0,0,0,0.07)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                  {/* Card image area */}
+                  <div style={{ background: `linear-gradient(135deg, ${subColor.bg} 0%, #f5f7ff 100%)`, height: 140, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 64, position: "relative" }}>
+                    {prod.emoji}
+                    <div style={{ position: "absolute", top: 10, right: 10, background: "white", borderRadius: 50, width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, boxShadow: "0 2px 8px rgba(0,0,0,0.1)", cursor: "pointer" }}>
+                      🤍
+                    </div>
+                  </div>
+
+                  {/* Card body */}
+                  <div style={{ padding: "16px", flex: 1, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                      <span style={{ background: subColor.bg, color: subColor.text, borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>
+                        {prod.subcategoria}
+                      </span>
+                      <span style={{ fontSize: 11, color: "#9ca3af", fontWeight: 600 }}>{prod.categoria}</span>
+                    </div>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: "#4d4d4d", marginBottom: 6, lineHeight: 1.3 }}>{prod.nombre}</div>
+                    <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, flex: 1, marginBottom: 14 }}>{prod.descripcion}</div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ fontWeight: 900, fontSize: 20, color: "#8896fc" }}>
+                        ${prod.precio.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
                       </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      <button
+                        className={`add-btn${isAdded ? " added" : ""}`}
+                        onClick={() => handleAgregar(prod.id)}
+                        style={{
+                          background: isAdded ? "#22c55e" : "#8896fc",
+                          color: "white",
+                          borderRadius: 10,
+                          padding: "8px 14px",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          fontFamily: "inherit",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 5,
+                        }}
+                      >
+                        {isAdded ? "✓ Agregado" : "+ Agregar"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+        ) : (
+          <div style={{ textAlign: "center", padding: "80px 20px" }}>
+            <div style={{ fontSize: 64, marginBottom: 16 }}>🔍</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#4d4d4d", marginBottom: 8 }}>No encontramos productos</div>
+            <div style={{ color: "#9ca3af", fontSize: 14 }}>Probá con otro término o categoría</div>
+          </div>
+        )}
+      </main>
 
-          {/* Pagination */}
-          {productosFiltrados.length > 0 && (
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">
-                  Mostrando <span className="font-medium">{productosFiltrados.length}</span> de{' '}
-                  <span className="font-medium">{productos.length}</span> productos
-                </div>
-                <div className="flex gap-2">
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    Anterior
-                  </button>
-                  <button className="px-4 py-2 text-sm font-medium text-white bg-[#8896fc] rounded-lg hover:bg-opacity-90 transition-colors">
-                    Siguiente
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Footer */}
+      <footer style={{ borderTop: "1px solid #e5e7eb", marginTop: 60, padding: "24px 20px", textAlign: "center", color: "#9ca3af", fontSize: 13 }}>
+        <span style={{ fontSize: 20 }}>🐾</span>  Raucan — Todo para tus mascotas
+      </footer>
     </div>
   );
-};
-
-export default Productos;
+}
