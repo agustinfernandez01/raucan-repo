@@ -1,5 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
+import { useCarrito } from "../../contexts/CarritoContext";
+import type { Producto } from "../../types/producto";
 
 const productos = [
   // Perros
@@ -42,10 +43,36 @@ const subcategoriasColor: Record<string, { bg: string; text: string }> = {
   Equipamiento: { bg: "#e8eaf6", text: "#283593" },
 };
 
+interface ProductoMock {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  categoria: string;
+  subcategoria: string;
+  activo: boolean;
+  emoji: string;
+}
+
+interface AgregadosState {
+  [key: number]: boolean;
+}
+
+function mockToProducto(p: ProductoMock): Producto {
+  return {
+    id: String(p.id),
+    nombre: p.nombre,
+    precioPorKg: p.precio,
+    descripcion: p.descripcion,
+    categoria: p.categoria,
+    unidad: "kg",
+  };
+}
+
 export default function CatalogoMascotas() {
+  const { addItem } = useCarrito();
   const [categoriaActiva, setCategoriaActiva] = useState("todas");
   const [searchTerm, setSearchTerm] = useState("");
-  const [carritoCount, setCarritoCount] = useState(0);
   const [agregados, setAgregados] = useState<AgregadosState>({});
 
   const productosFiltrados = productos.filter((p) => {
@@ -56,29 +83,14 @@ export default function CatalogoMascotas() {
     return matchCat && matchSearch;
   });
 
-  interface Producto {
-    id: number;
-    nombre: string;
-    descripcion: string;
-    precio: number;
-    categoria: string;
-    subcategoria: string;
-    activo: boolean;
-    emoji: string;
-  }
-
-  interface AgregadosState {
-    [key: number]: boolean;
-  }
-
-  const handleAgregar = (id: number): void => {
-    setCarritoCount((c: number) => c + 1);
-    setAgregados((prev: AgregadosState) => ({ ...prev, [id]: true }));
-    setTimeout(() => setAgregados((prev: AgregadosState) => ({ ...prev, [id]: false })), 1200);
+  const handleAgregar = (prod: ProductoMock): void => {
+    addItem(mockToProducto(prod), 1);
+    setAgregados((prev) => ({ ...prev, [prod.id]: true }));
+    setTimeout(() => setAgregados((prev) => ({ ...prev, [prod.id]: false })), 1200);
   };
 
   return (
-    <div style={{ fontFamily: "'Nunito', 'Segoe UI', sans-serif", background: "linear-gradient(135deg, #f5f7ff 0%, #fff9f0 100%)", minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'Nunito', 'Segoe UI', sans-serif", background: "linear-gradient(135deg, #e8e8ec 0%, #dfe0e5 100%)", minHeight: "100vh" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -189,7 +201,7 @@ export default function CatalogoMascotas() {
                       </div>
                       <button
                         className={`add-btn${isAdded ? " added" : ""}`}
-                        onClick={() => handleAgregar(prod.id)}
+                        onClick={() => handleAgregar(prod)}
                         style={{
                           background: isAdded ? "#22c55e" : "#8896fc",
                           color: "white",

@@ -3,10 +3,11 @@ import Header from './Header';
 
 export default function Layout() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen w-full bg-[#e8e8ec]">
       <Header />
-      <Outlet />
-      {/* Opcional: <Footer /> */}
-    </>
+      <main className="flex-1 w-full">
+        <Outlet />
+      </main>
+    </div>
   );
 }

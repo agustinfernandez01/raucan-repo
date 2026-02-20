@@ -108,6 +108,13 @@ export default function Header() {
             {isAuthenticated ? (
               <>
                 <Link
+                  to={ROUTES.MASCOTAS}
+                  className="h-navlink"
+                  style={{ ...navLink(ROUTES.MASCOTAS), display: 'flex', alignItems: 'center', gap: 6 }}
+                >
+                  🐕 Mascotas
+                </Link>
+                <Link
                   to={ROUTES.PERFIL}
                   className="h-navlink"
                   style={{ ...navLink(ROUTES.PERFIL), display: 'flex', alignItems: 'center', gap: 7 }}
@@ -207,6 +214,9 @@ export default function Header() {
           <div style={{ height: 1, background: '#f3f4f6', margin: '6px 0' }} />
           {isAuthenticated ? (
             <>
+              <Link to={ROUTES.MASCOTAS} onClick={() => setMenuOpen(false)} className="h-navlink" style={{ ...navLink(ROUTES.MASCOTAS), display: 'block' }}>
+                🐕 Mascotas
+              </Link>
               <Link to={ROUTES.PERFIL} onClick={() => setMenuOpen(false)} className="h-navlink" style={{ ...navLink(ROUTES.PERFIL), display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg, #8896fc, #ffa9e0)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 900, fontSize: 12 }}>
                   {(user?.nombre ?? user?.email ?? 'U')[0].toUpperCase()}
