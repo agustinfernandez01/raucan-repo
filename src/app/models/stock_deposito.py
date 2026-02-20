@@ -15,7 +15,7 @@ class StockDeposito(Base):
     cantidad_producto = Column(Float, nullable=False, default=func.now()) 
     actualizado_en = Column(DateTime, nullable=False, default=func.now())
     #relaciones
-    producto = relationship("Producto")
+    producto = relationship("Productos")
     deposito = relationship("Deposito")
 
 

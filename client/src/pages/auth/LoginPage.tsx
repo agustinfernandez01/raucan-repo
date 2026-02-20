@@ -4,15 +4,12 @@ import axios from 'axios';
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [telefono, setTelefono] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
     try {
       const response = await axios.post("http://127.0.0.1:8000/login/auth", {
         email: email,
@@ -24,48 +21,52 @@ const Login: React.FC = () => {
         setError("Datos de inicio de sesión incorrectos. Por favor, verifica tu correo, teléfono y contraseña.");
         return;
       }
-      return response.data; // Devuelve los datos de la respuesta
-
+      return response.data;
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
     }
-    // Aquí iría tu lógica de autenticación
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f7ff] to-[#fff9f0] p-4">
-      <div className="w-full max-w-md">
+    /* 
+      En desktop: ocupa toda la pantalla, el card se centra con un ancho máximo grande.
+      En mobile: el card se apila verticalmente y ocupa casi todo el ancho.
+    */
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#f5f7ff] to-[#fff9f0] p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl">
+
         {/* Card del login */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 xl:p-12">
+
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-block p-3 bg-[#8896fc] bg-opacity-10 rounded-lg mb-4">
-              <svg 
-                className="w-10 h-10 text-[#8896fc]" 
-                fill="none" 
-                stroke="currentColor" 
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-block p-3 bg-[#8896fc] bg-opacity-10 rounded-xl mb-4">
+              <svg
+                className="w-10 h-10 sm:w-12 sm:h-12 text-[#8896fc]"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-semibold text-[#4d4d4d]">Bienvenido</h2>
-            <p className="text-gray-500 mt-1 text-sm">Inicia sesión en tu cuenta</p>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#4d4d4d]">Bienvenido</h2>
+            <p className="text-gray-500 mt-1 text-sm sm:text-base">Inicia sesión en tu cuenta</p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
 
             {/* Email Input */}
             <div>
-              <label 
-                htmlFor="email" 
-                className="block text-sm font-medium text-[#4d4d4d] mb-2"
+              <label
+                htmlFor="email"
+                className="block text-sm sm:text-base font-medium text-[#4d4d4d] mb-2"
               >
                 Correo electrónico
               </label>
@@ -75,7 +76,7 @@ const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none text-sm sm:text-base"
                 placeholder="tu@email.com"
               />
             </div>
@@ -84,7 +85,7 @@ const Login: React.FC = () => {
             <div>
               <label
                 htmlFor="telefono"
-                className="block text-sm font-medium text-[#4d4d4d] mb-2"
+                className="block text-sm sm:text-base font-medium text-[#4d4d4d] mb-2"
               >
                 Teléfono
               </label>
@@ -94,16 +95,16 @@ const Login: React.FC = () => {
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
                 required
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none text-sm sm:text-base"
                 placeholder="Ej: 1123456789"
               />
             </div>
 
             {/* Password Input */}
             <div>
-              <label 
-                htmlFor="password" 
-                className="block text-sm font-medium text-[#4d4d4d] mb-2"
+              <label
+                htmlFor="password"
+                className="block text-sm sm:text-base font-medium text-[#4d4d4d] mb-2"
               >
                 Contraseña
               </label>
@@ -114,7 +115,7 @@ const Login: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none pr-12"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none pr-12 text-sm sm:text-base"
                   placeholder="••••••••"
                 />
                 <button
@@ -135,13 +136,14 @@ const Login: React.FC = () => {
                 </button>
               </div>
             </div>
+
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
             {/* Remember me & Forgot password */}
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-sm sm:text-base">
               <label className="flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   className="w-4 h-4 rounded border-gray-300 text-[#8896fc] focus:ring-[#8896fc] cursor-pointer"
                 />
                 <span className="ml-2 text-[#4d4d4d]">Recordarme</span>
@@ -154,14 +156,14 @@ const Login: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2.5 px-4 bg-[#8896fc] text-white font-medium rounded-lg hover:bg-opacity-90 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#8896fc] focus:ring-offset-2"
+              className="w-full py-3 px-4 bg-[#8896fc] text-white font-medium rounded-lg hover:bg-opacity-90 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#8896fc] focus:ring-offset-2 text-sm sm:text-base"
             >
               Iniciar sesión
             </button>
           </form>
 
           {/* Sign up link */}
-          <p className="text-center mt-6 text-sm text-gray-600">
+          <p className="text-center mt-6 text-sm sm:text-base text-gray-600">
             ¿No tienes cuenta?{' '}
             <a href="#" className="text-[#8896fc] hover:text-[#ffa9e0] font-medium transition-colors">
               Regístrate aquí

@@ -18,4 +18,4 @@ class Carrito(Base):
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
 
     usuario = relationship("Usuario", back_populates="carrito")
-    producto = relationship("Producto", back_populates="carrito")
+    producto = relationship("Productos", back_populates="carrito")

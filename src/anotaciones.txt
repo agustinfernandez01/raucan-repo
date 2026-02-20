@@ -24,6 +24,10 @@ ENTRA
 uvicorn app.main:app --reload
 
 
+- Cambiar login (front y back)
+- Productos
+- Detalle producto
+
 
 usuarios 
 get - listo

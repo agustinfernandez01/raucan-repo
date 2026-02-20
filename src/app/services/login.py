@@ -16,12 +16,11 @@ def normalizar_email(e: str) -> str:
     return e.strip().lower()
 
 def Logueo(db: Session, login_request: LoginRequest) -> LoginResponse:
-    tel = normalizar_tel(login_request.telefono)
     email = normalizar_email(login_request.email)
 
     usuario = (
         db.query(Usuario)
-        .filter(Usuario.email == email, Usuario.telefono == tel)
+        .filter(Usuario.email == email)
         .first()
     )
 

@@ -5,8 +5,8 @@ from sqlalchemy.sql import func
 from app.db import Base
 
 
-class Producto(Base):
-    """Producto: comida de animales vendida por kg."""
+class Productos(Base):
+    """Productos: comida de animales vendida por kg."""
 
     __tablename__ = "productos"
 

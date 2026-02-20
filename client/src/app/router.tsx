@@ -5,7 +5,6 @@ import AdminRoute from '../components/admin/AdminRoute';
 import AdminLayout from '../components/layout/AdminLayout';
 import HomePage from '../pages/home/HomePage';
 import LoginPage from '../pages/auth/LoginPage';
-import RegisterPage from '../pages/auth/RegisterPage';
 import ProductosPage from '../pages/productos/ProductosPage';
 import ProductoDetailPage from '../pages/productos/ProductoDetailPage';
 import CarritoPage from '../pages/carrito/CarritoPage';
@@ -28,7 +27,6 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'login', element: <LoginPage /> },
-      { path: 'registro', element: <RegisterPage /> },
       { path: 'productos', element: <ProductosPage /> },
       { path: 'productos/:id', element: <ProductoDetailPage /> },
       { path: 'carrito', element: <CarritoPage /> },

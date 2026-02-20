@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload , selectinload
 from app.models.stock_deposito import StockDeposito
-from app.models.productos import Producto
+from app.models.productos import Productos
 from app.models.deposito import Deposito
 from app.schemas.stock_deposito import StockDepositoResponse, StockDepositoCreate, StockDepositoUpdate, StockDepositoPatch, StockDepositoDelete
 
@@ -24,7 +24,7 @@ def obtener_deposito_por_id(db: Session, id: int) -> StockDepositoResponse:
 def crear_deposito(db: Session, deposito: StockDepositoCreate) -> StockDepositoResponse:
     """Crea un nuevo deposito."""
     #validar que el producto y el deposito existan
-    producto = db.query(Producto).filter(Producto.id == deposito.id_producto).first()
+    producto = db.query(Productos).filter(Productos.id == deposito.id_producto).first()
     if not producto:
         raise ValueError("No se encontró el producto.")
     deposito = db.query(Deposito).filter(Deposito.id == deposito.id_deposito).first()

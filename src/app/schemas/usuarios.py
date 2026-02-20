@@ -13,7 +13,6 @@ class UsuarioBase(BaseModel):
     # datos de contacto
     email: EmailStr = Field(pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
     telefono: str = Field(min_length=1, max_length=255)
-    direccion: str = Field(min_length=1, max_length=255)
 
     # datos de seguridad
     rol: str = Field(min_length=1, max_length=255)
@@ -31,7 +30,6 @@ class UsuarioPatch(UsuarioBase):
     apellido: Optional[str] = Field(default=None, min_length=1, max_length=255)
     email: Optional[EmailStr] = Field(default=None, pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
     telefono: Optional[str] = Field(default=None, min_length=1, max_length=255)
-    direccion: Optional[str] = Field(default=None, min_length=1, max_length=255)
     rol: Optional[str] = Field(default=None, min_length=1, max_length=255)
     activo: Optional[bool] = Field(default=None)    
     actualizado_en: Optional[datetime] = Field(default=datetime.now())

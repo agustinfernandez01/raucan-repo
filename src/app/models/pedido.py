@@ -38,4 +38,4 @@ class PedidoDetalle(Base):
     subtotal = Column(Float, nullable=True)  # cantidad_kg * precio_por_kg
 
     pedido = relationship("Pedido", back_populates="detalles")
-    producto = relationship("Producto", back_populates="pedido_detalles")
+    producto = relationship("Productos", back_populates="pedido_detalles")
