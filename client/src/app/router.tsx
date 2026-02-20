@@ -1,7 +1,8 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import Layout from '../components/layout/Layout';
 import AdminRoute from '../components/admin/AdminRoute';
+import RequireAuth from '../components/auth/RequireAuth';
 import AdminLayout from '../components/layout/AdminLayout';
 import HomePage from '../pages/home/HomePage';
 import LoginPage from '../pages/auth/LoginPage';
@@ -13,6 +14,7 @@ import PedidosPage from '../pages/pedidos/PedidosPage';
 import PedidoDetailPage from '../pages/pedidos/PedidoDetailPage';
 import PerfilPage from '../pages/perfil/PerfilPage';
 import MascotasPage from '../pages/perfil/MascotasPage';
+import MascotaFormPage from '../pages/perfil/MascotaFormPage';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
 import AdminPedidosPage from '../pages/admin/AdminPedidosPage';
 import AdminPedidoDetailPage from '../pages/admin/AdminPedidoDetailPage';
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
     path: ROUTES.HOME,
     element: <Layout />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <Navigate to={ROUTES.PRODUCTOS} replace /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'registro', element: <RegisterPage /> },
       { path: 'productos', element: <ProductosPage /> },
@@ -34,8 +36,16 @@ const router = createBrowserRouter([
       { path: 'carrito', element: <CarritoPage /> },
       { path: 'pedidos', element: <PedidosPage /> },
       { path: 'pedidos/:id', element: <PedidoDetailPage /> },
-      { path: 'perfil', element: <PerfilPage /> },
-      { path: 'perfil/mascotas', element: <MascotasPage /> },
+      {
+        path: 'perfil',
+        element: <RequireAuth />,
+        children: [
+          { index: true, element: <PerfilPage /> },
+          { path: 'mascotas', element: <MascotasPage /> },
+          { path: 'mascotas/nueva', element: <MascotaFormPage /> },
+          { path: 'mascotas/editar/:id', element: <MascotaFormPage /> },
+        ],
+      },
     ],
   },
   {

@@ -3,6 +3,7 @@ import { apiFetch } from './api';
 export interface LoginBody {
   email: string;
   password: string;
+  telefono: string;
 }
 
 export interface LoginResponse {

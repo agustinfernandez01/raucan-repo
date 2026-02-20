@@ -2,12 +2,12 @@
  * Tipos para mascotas (alineados al backend).
  */
 export interface Mascota {
-  id: string;
-  usuario_id: string;
+  id: string | number;
+  usuario_id: string | number;
   nombre: string;
-  tipo: string;
+  especie?: string;
   raza?: string;
-  edad?: string;
+  fecha_nacimiento?: string;
   peso_kg?: number;
-  alergias_observaciones?: string;
+  notas?: string;
 }

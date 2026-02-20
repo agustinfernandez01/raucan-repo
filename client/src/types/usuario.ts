@@ -2,7 +2,7 @@
  * Tipos para usuario (alineados al backend).
  */
 export interface Usuario {
-  id: string;
+  id: string | number;
   email: string;
   nombre: string;
   apellido?: string;
@@ -10,4 +10,5 @@ export interface Usuario {
   telefono_whatsapp?: string;
   direccion?: string;
   rol?: string;
+  activo?: boolean;
 }

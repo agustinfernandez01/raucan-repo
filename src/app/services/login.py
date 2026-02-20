@@ -3,7 +3,7 @@ import jwt
 from sqlalchemy.orm import Session
 from app.models import Usuario
 from app.schemas import LoginRequest, LoginResponse
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from datetime import datetime, timezone, timedelta
 import os
 import os, re

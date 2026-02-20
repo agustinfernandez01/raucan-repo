@@ -12,7 +12,7 @@ interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, telefono: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
 }
@@ -43,8 +43,8 @@ function userFromToken(sub: string, email: string): User {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const res = await authService.login({ email, password });
+  const login = useCallback(async (email: string, password: string, telefono: string) => {
+    const res = await authService.login({ email, password, telefono });
     if (res.access_token) {
       authService.setStoredToken(res.access_token);
       const payload = authService.decodeTokenPayload(res.access_token);

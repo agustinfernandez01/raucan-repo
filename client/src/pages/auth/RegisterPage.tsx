@@ -102,7 +102,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f7ff] to-[#fff9f0] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5] p-4">
       <div className="w-full max-w-2xl">
         <div className="bg-white rounded-xl shadow-lg p-8">
 

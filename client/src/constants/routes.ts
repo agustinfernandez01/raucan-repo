@@ -12,6 +12,8 @@ export const ROUTES = {
   PEDIDO_DETAIL: '/pedidos/:id',
   PERFIL: '/perfil',
   MASCOTAS: '/perfil/mascotas',
+  MASCOTA_NUEVA: '/perfil/mascotas/nueva',
+  MASCOTA_EDITAR: '/perfil/mascotas/editar/:id',
   NOT_FOUND: '*',
 } as const;
 
@@ -35,4 +37,8 @@ export function pedidoDetailPath(id: string): string {
 
 export function adminPedidoDetailPath(id: string): string {
   return `/admin/pedidos/${id}`;
+}
+
+export function mascotaEditarPath(id: string | number): string {
+  return `/perfil/mascotas/editar/${id}`;
 }

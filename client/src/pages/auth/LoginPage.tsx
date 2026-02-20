@@ -1,39 +1,44 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { ROUTES } from '../../constants/routes';
 
 const Login: React.FC = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [telefono, setTelefono] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [telefono, setTelefono] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+    setError('');
+    setLoading(true);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/login/auth", {
-        email: email,
-        password: password,
-        telefono: telefono
-      });
-      if (!response) {
-        console.error("Error en la respuesta del servidor:", response);
-        setError("Datos de inicio de sesión incorrectos. Por favor, verifica tu correo, teléfono y contraseña.");
-        return;
+      await login(email, password, telefono);
+      navigate(ROUTES.MASCOTAS, { replace: true });
+    } catch (err) {
+      let msg = 'Credenciales incorrectas. Verificá correo, teléfono y contraseña.';
+      if (err instanceof Error && err.message) {
+        try {
+          const parsed = JSON.parse(err.message) as { detail?: string };
+          if (typeof parsed?.detail === 'string') msg = parsed.detail;
+          else msg = err.message;
+        } catch {
+          msg = err.message;
+        }
       }
-      return response.data; // Devuelve los datos de la respuesta
-
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
-    // Aquí iría tu lógica de autenticación
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f7ff] to-[#fff9f0] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5] p-4">
       <div className="w-full max-w-md">
         {/* Card del login */}
         <div className="bg-white rounded-xl shadow-lg p-8">
@@ -154,18 +159,19 @@ const Login: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2.5 px-4 bg-[#8896fc] text-white font-medium rounded-lg hover:bg-opacity-90 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#8896fc] focus:ring-offset-2"
+              disabled={loading}
+              className="w-full py-2.5 px-4 bg-[#8896fc] text-white font-medium rounded-lg hover:bg-opacity-90 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#8896fc] focus:ring-offset-2 disabled:opacity-70 disabled:pointer-events-none"
             >
-              Iniciar sesión
+              {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
 
           {/* Sign up link */}
           <p className="text-center mt-6 text-sm text-gray-600">
             ¿No tienes cuenta?{' '}
-            <a href="#" className="text-[#8896fc] hover:text-[#ffa9e0] font-medium transition-colors">
+            <Link to={ROUTES.REGISTER} className="text-[#8896fc] hover:text-[#ffa9e0] font-medium transition-colors">
               Regístrate aquí
-            </a>
+            </Link>
           </p>
         </div>
 
