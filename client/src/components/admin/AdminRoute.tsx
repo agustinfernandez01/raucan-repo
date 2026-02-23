@@ -8,8 +8,12 @@ import { ROUTES } from '../../constants/routes';
  * Si está logueado pero no es admin → redirige a home.
  */
 export default function AdminRoute() {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, authChecked } = useAuth();
   const location = useLocation();
+
+  if (!authChecked) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;

@@ -12,6 +12,8 @@ interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  /** False hasta haber revisado el token en localStorage (evita redirigir al login al recargar) */
+  authChecked: boolean;
   login: (email: string, password: string, telefono: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
@@ -42,6 +44,7 @@ function userFromToken(sub: string, email: string): User {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const login = useCallback(async (email: string, password: string, telefono: string) => {
     const res = await authService.login({ email, password, telefono });
@@ -66,21 +69,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserState(u);
   }, []);
 
-  // Restaurar sesión desde token al cargar (opcional; el backend puede devolver usuario en /me)
+  // Restaurar sesión desde token al cargar
   useEffect(() => {
     const token = authService.getStoredToken();
-    if (token && !user) {
+    if (token) {
       const payload = authService.decodeTokenPayload(token);
       if (payload?.sub) {
         setUserState(userFromToken(payload.sub, ''));
       }
     }
+    setAuthChecked(true);
   }, []);
 
   const value: AuthContextValue = {
     user,
     isAuthenticated: !!user,
     isAdmin: user?.rol === 'admin',
+    authChecked,
     login,
     logout,
     setUser,

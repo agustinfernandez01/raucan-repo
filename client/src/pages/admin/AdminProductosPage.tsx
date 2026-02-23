@@ -89,7 +89,7 @@ const Productos: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-semibold text-[#4d4d4d]">Productos</h1>
+              <h1 className="text-3xl font-semibold text-[#2D2D2D]">Productos</h1>
               <p className="text-gray-500 mt-1">Gestiona tu inventario de productos</p>
             </div>
             <button className="px-6 py-2.5 bg-[#8896fc] text-white font-medium rounded-lg hover:bg-opacity-90 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2">
@@ -105,7 +105,7 @@ const Productos: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Search */}
               <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-[#4d4d4d] mb-2">
+                <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
                   Buscar
                 </label>
                 <div className="relative">
@@ -129,7 +129,7 @@ const Productos: React.FC = () => {
 
               {/* Categoria Filter */}
               <div>
-                <label className="block text-sm font-medium text-[#4d4d4d] mb-2">
+                <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
                   Categoría
                 </label>
                 <select
@@ -147,7 +147,7 @@ const Productos: React.FC = () => {
 
               {/* Estado Filter */}
               <div>
-                <label className="block text-sm font-medium text-[#4d4d4d] mb-2">
+                <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
                   Estado
                 </label>
                 <select
@@ -170,7 +170,7 @@ const Productos: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Total Productos</p>
-                <p className="text-2xl font-semibold text-[#4d4d4d] mt-1">{productos.length}</p>
+                <p className="text-2xl font-semibold text-[#2D2D2D] mt-1">{productos.length}</p>
               </div>
               <div className="p-3 bg-[#8896fc] bg-opacity-10 rounded-lg">
                 <svg className="w-6 h-6 text-[#8896fc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,7 +266,7 @@ const Productos: React.FC = () => {
                         #{producto.id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-[#4d4d4d]">{producto.nombre}</div>
+                        <div className="text-sm font-medium text-[#2D2D2D]">{producto.nombre}</div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-500 max-w-xs truncate">

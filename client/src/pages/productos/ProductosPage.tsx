@@ -90,9 +90,9 @@ export default function CatalogoMascotas() {
   };
 
   return (
-    <div style={{ fontFamily: "'Nunito', 'Segoe UI', sans-serif", background: "linear-gradient(135deg, #e8e8ec 0%, #dfe0e5 100%)", minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'Quicksand', system-ui, sans-serif", background: "linear-gradient(135deg, #e8e8ec 0%, #dfe0e5 100%)", minHeight: "100vh" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .cat-btn { border: none; cursor: pointer; transition: all 0.2s; }
         .cat-btn:hover { transform: translateY(-2px); }
@@ -193,7 +193,7 @@ export default function CatalogoMascotas() {
                       </span>
                       <span style={{ fontSize: 11, color: "#9ca3af", fontWeight: 600 }}>{prod.categoria}</span>
                     </div>
-                    <div style={{ fontWeight: 800, fontSize: 15, color: "#4d4d4d", marginBottom: 6, lineHeight: 1.3 }}>{prod.nombre}</div>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: "#2D2D2D", marginBottom: 6, lineHeight: 1.3 }}>{prod.nombre}</div>
                     <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, flex: 1, marginBottom: 14 }}>{prod.descripcion}</div>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <div style={{ fontWeight: 900, fontSize: 20, color: "#8896fc" }}>
@@ -226,7 +226,7 @@ export default function CatalogoMascotas() {
         ) : (
           <div style={{ textAlign: "center", padding: "80px 20px" }}>
             <div style={{ fontSize: 64, marginBottom: 16 }}>🔍</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#4d4d4d", marginBottom: 8 }}>No encontramos productos</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#2D2D2D", marginBottom: 8 }}>No encontramos productos</div>
             <div style={{ color: "#9ca3af", fontSize: 14 }}>Probá con otro término o categoría</div>
           </div>
         )}

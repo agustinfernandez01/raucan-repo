@@ -5,6 +5,10 @@ export async function getUsuarios(): Promise<Usuario[]> {
   return apiFetch<Usuario[]>('/usuarios/get-usuarios');
 }
 
+export async function getUsuario(id: string | number): Promise<Usuario> {
+  return apiFetch<Usuario>(`/usuarios/get/${id}`);
+}
+
 export async function crearUsuario(data: {
   nombre: string;
   apellido: string;
@@ -33,8 +37,8 @@ export async function actualizarUsuario(
     password: string;
   }>
 ): Promise<Usuario> {
-  return apiFetch<Usuario>(`/usuarios/${id}`, {
-    method: 'PUT',
+  return apiFetch<Usuario>(`/usuarios/patch/${id}`, {
+    method: 'PATCH',
     body: JSON.stringify(data),
   });
 }
