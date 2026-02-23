@@ -7,7 +7,10 @@ export interface Producto {
   precioPorKg: number;
   precio_por_kg?: number; // por si la API devuelve snake_case
   descripcion?: string;
-  categoria?: string;
+  categoria_producto?: {
+    id: number;
+    nombre: string;
+    descripcion?: string;
+  };
   imagen_url?: string;
-  unidad?: 'kg';
 }

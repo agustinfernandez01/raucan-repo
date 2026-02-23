@@ -1,11 +1,11 @@
 from pydantic import BaseModel, ConfigDict
-
+from app.schemas.categoria_producto import CategoriaProductoSimple
 
 class ProductoBase(BaseModel):
     nombre: str
     precio_por_kg: float
     descripcion: str | None = None
-    categoria: str | None = None
+    categoria_producto: CategoriaProductoSimple | None = None
     imagen_url: str | None = None
     activo: bool = True
 
@@ -25,7 +25,7 @@ class ProductoPatch(BaseModel):
     nombre: str | None = None
     precio_por_kg: float | None = None
     descripcion: str | None = None
-    categoria: str | None = None
+    categoria_producto: CategoriaProductoSimple | None = None
     imagen_url: str | None = None
     activo: bool | None = None
 

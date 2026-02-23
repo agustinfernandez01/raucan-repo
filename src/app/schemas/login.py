@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr  # EmailStr requiere email-validator: p
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    telefono: str
     password: str
 
 class LoginResponse(BaseModel):

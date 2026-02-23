@@ -86,25 +86,6 @@ const Login: React.FC = () => {
               />
             </div>
 
-            {/* Teléfono Input */}
-            <div>
-              <label
-                htmlFor="telefono"
-                className="block text-sm sm:text-base font-medium text-[#4d4d4d] mb-2"
-              >
-                Teléfono
-              </label>
-              <input
-                id="telefono"
-                type="tel"
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none text-sm sm:text-base"
-                placeholder="Ej: 1123456789"
-              />
-            </div>
-
             {/* Password Input */}
             <div>
               <label

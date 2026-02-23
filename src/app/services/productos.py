@@ -4,20 +4,23 @@ import app.models.productos as models_producto
 from app.schemas.productos import ProductoCreate, ProductoUpdate, ProductoResponse
 
 
-def listar(db: Session):
+def listar(db: Session, categoria_producto_id: int | None = None) -> list[ProductoResponse]:
     """Lista todos los productos (comida por kg)."""
-    return db.query(models_producto.Productos).all()
+    query = db.query(models_producto.Productos)
+    if categoria_producto_id is not None:
+        query = query.filter(models_producto.Productos.categoria_id == categoria_producto_id)
+    return query.order_by(models_producto.Productos.nombre).all()
 
 
-def obtener_producto_id(db: Session, producto_id: int):
+def obtener_producto_id(db: Session, producto_id: int) -> ProductoResponse | None:
     """Obtiene un producto por su id. Retorna None si no existe."""
     return db.query(models_producto.Productos).filter(
         models_producto.Productos.id == producto_id
     ).first()
 
 
-def crear_producto(db: Session, datos: ProductoCreate):
-    """Crea un nuevo producto."""
+def crear_producto(db: Session, datos: ProductoCreate) -> ProductoResponse:
+    """Crea un nuevo producto. Retorna el producto creado."""
     producto = models_producto.Productos(**datos.model_dump())
     db.add(producto)
     db.commit()
@@ -25,7 +28,7 @@ def crear_producto(db: Session, datos: ProductoCreate):
     return producto
 
 
-def actualizar_producto(db: Session, producto_id: int, datos: ProductoUpdate):
+def actualizar_producto(db: Session, producto_id: int, datos: ProductoUpdate) -> ProductoResponse:
     """Actualiza un producto. Retorna el producto actualizado o None si no existe."""
     producto = obtener_producto_id(db, producto_id)
     if producto is None:
