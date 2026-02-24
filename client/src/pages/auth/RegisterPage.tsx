@@ -92,7 +92,7 @@ const Register: React.FC = () => {
       <div className="w-full max-w-2xl">
         <div className="bg-white rounded-xl shadow-lg p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-[#4d4d4d]">Crear Cuenta</h2>
+            <h2 className="text-2xl font-semibold text-[#2D2D2D]">Crear Cuenta</h2>
             <p className="text-gray-500 mt-1 text-sm">Completa el formulario para registrarte</p>
           </div>
 

@@ -60,8 +60,13 @@ const Login: React.FC = () => {
                 />
               </svg>
             </div>
+<<<<<<< HEAD
             <h2 className="text-2xl sm:text-3xl font-semibold text-[#4d4d4d]">Bienvenido</h2>
             <p className="text-gray-500 mt-1 text-sm sm:text-base">Inicia sesión en tu cuenta</p>
+=======
+            <h2 className="text-2xl font-semibold text-[#2D2D2D]">Bienvenido</h2>
+            <p className="text-gray-500 mt-1 text-sm">Inicia sesión en tu cuenta</p>
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
           </div>
 
           {/* Form */}
@@ -69,9 +74,15 @@ const Login: React.FC = () => {
 
             {/* Email Input */}
             <div>
+<<<<<<< HEAD
               <label
                 htmlFor="email"
                 className="block text-sm sm:text-base font-medium text-[#4d4d4d] mb-2"
+=======
+              <label 
+                htmlFor="email" 
+                className="block text-sm font-medium text-[#2D2D2D] mb-2"
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
               >
                 Correo electrónico
               </label>
@@ -86,11 +97,38 @@ const Login: React.FC = () => {
               />
             </div>
 
+<<<<<<< HEAD
             {/* Password Input */}
             <div>
               <label
                 htmlFor="password"
                 className="block text-sm sm:text-base font-medium text-[#4d4d4d] mb-2"
+=======
+            {/* Teléfono Input */}
+            <div>
+              <label
+                htmlFor="telefono"
+                className="block text-sm font-medium text-[#2D2D2D] mb-2"
+              >
+                Teléfono
+              </label>
+              <input
+                id="telefono"
+                type="tel"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+                required
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
+                placeholder="Ej: 1123456789"
+              />
+            </div>
+
+            {/* Password Input */}
+            <div>
+              <label 
+                htmlFor="password" 
+                className="block text-sm font-medium text-[#2D2D2D] mb-2"
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
               >
                 Contraseña
               </label>
@@ -132,7 +170,7 @@ const Login: React.FC = () => {
                   type="checkbox"
                   className="w-4 h-4 rounded border-gray-300 text-[#8896fc] focus:ring-[#8896fc] cursor-pointer"
                 />
-                <span className="ml-2 text-[#4d4d4d]">Recordarme</span>
+                <span className="ml-2 text-[#2D2D2D]">Recordarme</span>
               </label>
               <a href="#" className="text-[#8896fc] hover:text-[#ffa9e0] transition-colors">
                 ¿Olvidaste tu contraseña?

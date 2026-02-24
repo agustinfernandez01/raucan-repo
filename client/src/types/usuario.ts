@@ -6,6 +6,10 @@ export interface Usuario {
   nombre: string;
   apellido?: string;
   telefono: string;
+<<<<<<< HEAD
+=======
+  telefono_whatsapp?: string;
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
   rol?: string;
   activo?: boolean;
 }

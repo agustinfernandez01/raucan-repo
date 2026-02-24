@@ -13,11 +13,13 @@ class Pedido(Base):
     id = Column(Integer, primary_key=True, index=True)
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     estado = Column(String(50), nullable=False, default="pendiente")  # pendiente, confirmado, enviado, entregado, cancelado
+    metodo_pago = Column(String(50), nullable=True)  # efectivo, transferencia
     total = Column(Float, nullable=False)
     direccion_entrega = Column(Text, nullable=True)
     mensaje_enviado = Column(Text, nullable=True)  # texto del mensaje al admin
     canal_mensaje = Column(String(50), nullable=True)  # whatsapp, email
     notas_internas = Column(Text, nullable=True)
+    whatsapp_message_id = Column(String(100), nullable=True)  # ID del mensaje de WhatsApp enviado
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
     metodo_pago = Column(String(50), nullable=False)

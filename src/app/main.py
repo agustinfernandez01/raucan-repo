@@ -11,7 +11,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
+<<<<<<< HEAD
 from app.routers import carrito, categoria_producto, login, mascota, pedido, productos, usuarios, stock_deposito, deposito
+=======
+from app.routers import carrito, login, mascota, pedido, productos, usuarios, stock_deposito, deposito, whatsapp
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
 
 
 @asynccontextmanager
@@ -47,7 +51,11 @@ app.include_router(pedido.router, prefix="/pedidos", tags=["pedidos"])
 app.include_router(mascota.router, prefix="/mascotas", tags=["mascotas"])
 app.include_router(deposito.router, prefix="/depositos", tags=["depositos"])
 app.include_router(stock_deposito.router, prefix="/stock_deposito", tags=["stock_deposito"])
+<<<<<<< HEAD
 app.include_router(categoria_producto.router, prefix="/categoria_producto", tags=["categoria_producto"])
+=======
+app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
 
 
 @app.get("/health")

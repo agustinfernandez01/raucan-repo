@@ -13,7 +13,7 @@ export default function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   const linkBase: React.CSSProperties = {
-    fontFamily: "'Nunito', 'Segoe UI', sans-serif",
+    fontFamily: "'Quicksand', system-ui, sans-serif",
     fontWeight: 700,
     fontSize: 14,
     textDecoration: 'none',
@@ -31,16 +31,18 @@ export default function Header() {
 
   const adminLink: React.CSSProperties = {
     ...linkBase,
-    color: '#ffa9e0',
-    background: isActive(ADMIN_ROUTES.DASHBOARD) ? 'rgba(255,169,224,0.12)' : 'transparent',
+    color: 'white',
+    background: 'linear-gradient(135deg, #8896fc 0%, #ffa9e0 100%)',
+    padding: '8px 16px',
+    boxShadow: '0 2px 8px rgba(136,150,252,0.3)',
   };
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
         .h-navlink:hover { color: #8896fc !important; background: rgba(136,150,252,0.08) !important; }
-        .h-adminlink:hover { color: #d946a8 !important; background: rgba(255,169,224,0.12) !important; }
+        .h-adminlink:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(136,150,252,0.4) !important; }
         .h-logout:hover { color: #e11d48 !important; background: #fff1f2 !important; }
         .h-loginbtn:hover { opacity: 0.88; transform: translateY(-1px); }
         @media (max-width: 640px) {
@@ -59,7 +61,7 @@ export default function Header() {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        fontFamily: "'Nunito', 'Segoe UI', sans-serif",
+        fontFamily: "'Quicksand', system-ui, sans-serif",
       }}>
         <nav style={{
           maxWidth: 1200,
@@ -76,7 +78,7 @@ export default function Header() {
           <Link to={ROUTES.HOME} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
             <span style={{ fontSize: 28 }}>🐾</span>
             <div>
-              <div style={{ fontWeight: 900, fontSize: 18, color: '#4d4d4d', letterSpacing: '-0.5px', lineHeight: 1.1 }}>Raucan</div>
+              <div style={{ fontWeight: 900, fontSize: 18, color: '#2D2D2D', letterSpacing: '-0.5px', lineHeight: 1.1 }}>Raucan</div>
               <div style={{ fontSize: 10, color: '#8896fc', fontWeight: 700, letterSpacing: '0.06em', lineHeight: 1 }}>TODO PARA TUS MASCOTAS</div>
             </div>
           </Link>

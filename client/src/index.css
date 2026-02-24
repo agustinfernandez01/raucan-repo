@@ -1,19 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --color-raucan-amarillo: #ffe252;
   --color-raucan-rosa: #ffa9e0;
   --color-raucan-lavanda: #8896fc;
-  --color-raucan-gris: #4d4d4d;
+  --color-raucan-gris: #2D2D2D;
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Quicksand', system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light;
-  color: #4d4d4d;
+  color: #2D2D2D;
   background-color: #e8e8ec;
 
   font-synthesis: none;
@@ -43,6 +44,14 @@ a:hover {
   color: #6b7af5;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+p, span {
+  font-weight: 400;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -56,7 +65,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #f0f0f0;
-  color: #4d4d4d;
+  color: #2D2D2D;
   cursor: pointer;
   transition: border-color 0.25s, background-color 0.25s;
 }

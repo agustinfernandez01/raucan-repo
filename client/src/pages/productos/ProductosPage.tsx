@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
+=======
+import { useState, useEffect } from "react";
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
 import { useCarrito } from "../../contexts/CarritoContext";
+import { getProductos } from "../../services/productos";
 import type { Producto } from "../../types/producto";
 import type { CategoriaProducto } from "../../types/categoria_producto";
 import { getProductos } from "../../services/productos";
 import { getCategorias } from "../../services/categorias";
 
+<<<<<<< HEAD
 type AgregadosState = Record<string, boolean>;
 
 // Emojis y colores por categoría (decorativos, basados en el nombre)
@@ -39,6 +45,39 @@ export default function ProductosPage() {
   const { addItem } = useCarrito();
   const [categoriaActiva, setCategoriaActiva] = useState<number | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState("");
+=======
+const categorias = [
+  { id: "todas", label: "Todo", icon: "🐾" },
+  { id: "Perros", label: "Perros", icon: "🐶" },
+  { id: "Gatos", label: "Gatos", icon: "🐱" },
+];
+
+interface AgregadosState {
+  [key: string]: boolean;
+}
+
+function getEmojiForCategoria(categoria?: string): string {
+  if (!categoria) return "🐾";
+  const lower = categoria.toLowerCase();
+  if (lower.includes("perro")) return "🐶";
+  if (lower.includes("gato")) return "🐱";
+  return "🐾";
+}
+
+function getCategoriaColor(categoria?: string): { bg: string; text: string } {
+  if (!categoria) return { bg: "#f3f4f6", text: "#6b7280" };
+  const lower = categoria.toLowerCase();
+  if (lower.includes("perro")) return { bg: "#fff3e0", text: "#e65100" };
+  if (lower.includes("gato")) return { bg: "#e3f2fd", text: "#1565c0" };
+  return { bg: "#f3f4f6", text: "#6b7280" };
+}
+
+export default function CatalogoMascotas() {
+  const { addItem } = useCarrito();
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categoriaActiva, setCategoriaActiva] = useState("todas");
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
   const [agregados, setAgregados] = useState<AgregadosState>({});
   const [productos, setProductos] = useState<Producto[]>([]);
   const [categorias, setCategorias] = useState<CategoriaProducto[]>([]);
@@ -56,7 +95,16 @@ export default function ProductosPage() {
     });
   }, [categoriaActiva]);
 
+  useEffect(() => {
+    setLoading(true);
+    getProductos()
+      .then((data) => setProductos(data))
+      .catch(() => setProductos([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   const productosFiltrados = productos.filter((p) => {
+<<<<<<< HEAD
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return (
@@ -64,6 +112,11 @@ export default function ProductosPage() {
       (p.descripcion?.toLowerCase().includes(term) ?? false) ||
       (p.categoria_producto?.nombre.toLowerCase().includes(term) ?? false)
     );
+=======
+    if (categoriaActiva === "todas") return true;
+    const cat = p.categoria?.toLowerCase() || "";
+    return cat.includes(categoriaActiva.toLowerCase());
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
   });
 
   const handleAgregar = (prod: Producto): void => {
@@ -78,6 +131,7 @@ export default function ProductosPage() {
       : undefined;
 
   return (
+<<<<<<< HEAD
     <div style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif", background: "#f4f5f9", minHeight: "100vh" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,800&display=swap');
@@ -90,6 +144,13 @@ export default function ProductosPage() {
           transition: all 0.18s ease;
           white-space: nowrap;
         }
+=======
+    <div style={{ fontFamily: "'Quicksand', system-ui, sans-serif", background: "linear-gradient(135deg, #e8e8ec 0%, #dfe0e5 100%)", minHeight: "100vh" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .cat-btn { border: none; cursor: pointer; transition: all 0.2s; }
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
         .cat-btn:hover { transform: translateY(-2px); }
         .cat-btn.active { transform: translateY(-2px); }
 
@@ -312,15 +373,29 @@ export default function ProductosPage() {
         )}
 
         {/* Grid productos */}
+<<<<<<< HEAD
         {!loading && productosFiltrados.length > 0 && (
           <div className="grid-productos fade-in" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
             {productosFiltrados.map((prod) => {
               const catNombre = prod.categoria_producto?.nombre ?? "";
               const style = getCatStyle(catNombre);
+=======
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "80px 20px" }}>
+            <div style={{ fontSize: 48, marginBottom: 16, animation: "spin 1s linear infinite" }}>⏳</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: "#6b7280" }}>Cargando productos...</div>
+          </div>
+        ) : productosFiltrados.length > 0 ? (
+          <div className="grid-productos" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
+            {productosFiltrados.map((prod) => {
+              const catColor = getCategoriaColor(prod.categoria);
+              const emoji = getEmojiForCategoria(prod.categoria);
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
               const isAdded = agregados[prod.id];
               const precio = getPrecio(prod);
 
               return (
+<<<<<<< HEAD
                 <div key={prod.id} className="product-card">
                   {/* Imagen / emoji area */}
                   <div style={{
@@ -358,10 +433,19 @@ export default function ProductosPage() {
                       backdropFilter: "blur(4px)",
                     }}>
                       por kg
+=======
+                <div key={prod.id} className="card" style={{ background: "white", borderRadius: 18, boxShadow: "0 4px 20px rgba(0,0,0,0.07)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                  {/* Card image area */}
+                  <div style={{ background: `linear-gradient(135deg, ${catColor.bg} 0%, #f5f7ff 100%)`, height: 140, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 64, position: "relative" }}>
+                    {emoji}
+                    <div style={{ position: "absolute", top: 10, right: 10, background: "white", borderRadius: 50, width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, boxShadow: "0 2px 8px rgba(0,0,0,0.1)", cursor: "pointer" }}>
+                      🤍
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
                     </div>
                   </div>
 
                   {/* Card body */}
+<<<<<<< HEAD
                   <div style={{ padding: "16px 16px 18px", flex: 1, display: "flex", flexDirection: "column" }}>
                     {/* Categoría badge */}
                     {catNombre && (
@@ -397,6 +481,20 @@ export default function ProductosPage() {
                           ${precio.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
                         </div>
                         <div style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600, marginTop: 2 }}>por kg</div>
+=======
+                  <div style={{ padding: "16px", flex: 1, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                      <span style={{ background: catColor.bg, color: catColor.text, borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>
+                        BARF
+                      </span>
+                      <span style={{ fontSize: 11, color: "#9ca3af", fontWeight: 600 }}>{prod.categoria || "General"}</span>
+                    </div>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: "#2D2D2D", marginBottom: 6, lineHeight: 1.3 }}>{prod.nombre}</div>
+                    <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.5, flex: 1, marginBottom: 14 }}>{prod.descripcion || "Alimento natural para tu mascota"}</div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ fontWeight: 900, fontSize: 20, color: "#8896fc" }}>
+                        ${prod.precioPorKg.toLocaleString("es-AR", { minimumFractionDigits: 2 })}<span style={{ fontSize: 12, fontWeight: 600, color: "#9ca3af" }}>/kg</span>
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
                       </div>
                       <button
                         className={`add-btn${isAdded ? " added" : ""}`}
@@ -418,6 +516,7 @@ export default function ProductosPage() {
               );
             })}
           </div>
+<<<<<<< HEAD
         )}
 
         {/* Empty state */}
@@ -446,6 +545,13 @@ export default function ProductosPage() {
             >
               Ver todos los productos
             </button>
+=======
+        ) : (
+          <div style={{ textAlign: "center", padding: "80px 20px" }}>
+            <div style={{ fontSize: 64, marginBottom: 16 }}>🔍</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#2D2D2D", marginBottom: 8 }}>No encontramos productos</div>
+            <div style={{ color: "#9ca3af", fontSize: 14 }}>Probá con otro término o categoría</div>
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
           </div>
         )}
       </main>

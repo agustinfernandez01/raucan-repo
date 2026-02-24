@@ -39,6 +39,7 @@ class PedidoDetalleResponse(BaseModel):
 class PedidoBase(BaseModel):
     usuario_id: int
     estado: str = "pendiente"
+    metodo_pago: str | None = None  # efectivo, transferencia
     total: float
     direccion_entrega: str | None = None
     mensaje_enviado: str | None = None
@@ -61,6 +62,7 @@ class PedidoCreate(BaseModel):
 class PedidoUpdate(BaseModel):
     """Schema para actualizar un pedido (estado, dirección, etc.)."""
     estado: str | None = None
+    metodo_pago: str | None = None
     direccion_entrega: str | None = None
     mensaje_enviado: str | None = None
     canal_mensaje: str | None = None
@@ -73,6 +75,7 @@ class PedidoResponse(BaseModel):
     id: int
     usuario_id: int
     estado: str
+    metodo_pago: str | None = None
     total: float
     direccion_entrega: str | None
     mensaje_enviado: str | None

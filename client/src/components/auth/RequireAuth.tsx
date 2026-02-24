@@ -4,11 +4,15 @@ import { ROUTES } from '../../constants/routes';
 
 /**
  * Protege rutas que requieren sesión (ej. perfil, mascotas).
- * Si no está logueado → redirige a login.
+ * No redirige hasta haber comprobado el token (evita mandar al login al recargar).
  */
 export default function RequireAuth() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authChecked } = useAuth();
   const location = useLocation();
+
+  if (!authChecked) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;

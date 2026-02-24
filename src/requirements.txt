@@ -5,5 +5,11 @@ PyJWT>=2.8.0
 bcrypt>=4.0.0
 email-validator>=2.0.0
 pymysql>=1.1.0
+psycopg2-binary>=2.9.0
+cryptography>=42.0.0
 python-dotenv>=1.0.0
+<<<<<<< HEAD
 psycopg2-binary
+=======
+httpx>=0.27.0
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import * as authService from '../services/auth';
+import { getUsuario } from '../services/usuarios';
 
 export interface User {
   id: string;
@@ -12,7 +13,13 @@ interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+<<<<<<< HEAD
   login: (email: string, password: string) => Promise<void>;
+=======
+  /** False hasta haber revisado el token en localStorage (evita redirigir al login al recargar) */
+  authChecked: boolean;
+  login: (email: string, password: string, telefono: string) => Promise<void>;
+>>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
   logout: () => void;
   setUser: (user: User | null) => void;
 }
@@ -42,6 +49,7 @@ function userFromToken(sub: string, email: string): User {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const login = useCallback(async (email: string, password: string) => {
     const res = await authService.login({ email, password });
@@ -66,21 +74,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserState(u);
   }, []);
 
-  // Restaurar sesión desde token al cargar (opcional; el backend puede devolver usuario en /me)
+  // Restaurar sesión desde token al cargar
   useEffect(() => {
-    const token = authService.getStoredToken();
-    if (token && !user) {
-      const payload = authService.decodeTokenPayload(token);
-      if (payload?.sub) {
-        setUserState(userFromToken(payload.sub, ''));
+    const restoreSession = async () => {
+      const token = authService.getStoredToken();
+      if (token) {
+        const payload = authService.decodeTokenPayload(token);
+        if (payload?.sub) {
+          try {
+            const userData = await getUsuario(payload.sub);
+            setUserState(userFromApi(userData));
+          } catch {
+            setUserState(userFromToken(payload.sub, ''));
+          }
+        }
       }
-    }
+      setAuthChecked(true);
+    };
+    restoreSession();
   }, []);
 
   const value: AuthContextValue = {
     user,
     isAuthenticated: !!user,
     isAdmin: user?.rol === 'admin',
+    authChecked,
     login,
     logout,
     setUser,

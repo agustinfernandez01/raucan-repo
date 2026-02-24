@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getMascotas, deleteMascota } from '../../services/mascotas';
 import type { Mascota } from '../../types/mascota';
 import { ROUTES, mascotaEditarPath } from '../../constants/routes';
+import { getRecomendacionAlimento } from '../../utils/recomendacionAlimento';
 import { Link } from 'react-router-dom';
 
 function MascotaCard({
@@ -29,52 +30,52 @@ function MascotaCard({
     mascota.especie === 'Gato' ? '🐱' :
     mascota.especie === 'Perro' ? '🐕' : '🐾';
 
-  const gramosRecomendados =
-    mascota.peso_kg != null && mascota.peso_kg > 0
-      ? Math.round(mascota.peso_kg * 25)
-      : null;
+  const recomendacion = getRecomendacionAlimento(mascota.especie, mascota.peso_kg);
 
   return (
-    <article className="bg-white rounded-[18px] shadow-[0_4px_20px_rgba(0,0,0,0.07)] p-5 hover:shadow-[0_12px_40px_rgba(136,150,252,0.18)] hover:-translate-y-0.5 transition-all duration-200 flex items-start gap-4">
-      <div className="w-16 h-16 rounded-full flex items-center justify-center shrink-0 text-3xl bg-gradient-to-br from-raucan-rosa/25 to-raucan-lavanda/20">
-        {especieIcon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="font-extrabold text-raucan-gris text-[15px] leading-tight mb-1 capitalize">
-          {mascota.nombre}
-        </h3>
-        <p className="text-[13px] text-gray-500">
-          {mascota.especie ?? 'Perro'}
-          {mascota.raza && ` · ${mascota.raza}`}
-        </p>
-        {mascota.peso_kg != null && (
-          <p className="text-[13px] text-gray-600 mt-0.5">{mascota.peso_kg} kg</p>
-        )}
-        {mascota.notas && (
-          <p className="text-[13px] text-gray-500 mt-2 line-clamp-2">{mascota.notas}</p>
-        )}
-        {gramosRecomendados != null && (
-          <p className="text-[13px] mt-2 flex items-center gap-1.5">
-            <span className="text-gray-500">Comida recomendada:</span>
-            <span className="font-bold text-raucan-lavanda">{gramosRecomendados} g/día</span>
-          </p>
-        )}
-        <div className="flex flex-wrap gap-2 mt-4">
-          <Link
-            to={mascotaEditarPath(mascota.id)}
-            className="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold bg-raucan-lavanda !text-white hover:opacity-90 transition-all shadow-[0_4px_16px_rgba(136,150,252,0.35)]"
-          >
-            Editar
-          </Link>
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={deleting}
-            className="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold bg-white text-gray-500 border border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.07)] hover:border-red-200 hover:text-red-600 hover:bg-red-50/50 disabled:opacity-50 transition-all"
-          >
-            {deleting ? 'Eliminando…' : 'Eliminar'}
-          </button>
+    <article className="bg-white rounded-[18px] shadow-[0_4px_20px_rgba(0,0,0,0.07)] p-4 sm:p-5 hover:shadow-[0_12px_40px_rgba(136,150,252,0.18)] hover:-translate-y-0.5 transition-all duration-200">
+      <div className="flex items-start gap-3 sm:gap-4">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shrink-0 text-2xl sm:text-3xl bg-gradient-to-br from-raucan-rosa/25 to-raucan-lavanda/20">
+          {especieIcon}
         </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-extrabold text-raucan-gris text-[14px] sm:text-[15px] leading-tight mb-1 capitalize">
+            {mascota.nombre}
+          </h3>
+          <p className="text-[12px] sm:text-[13px] text-gray-500">
+            {mascota.especie ?? 'Perro'}
+            {mascota.raza && ` · ${mascota.raza}`}
+          </p>
+          {mascota.peso_kg != null && (
+            <p className="text-[12px] sm:text-[13px] text-gray-600 mt-0.5">{mascota.peso_kg} kg</p>
+          )}
+          {mascota.notas && (
+            <p className="text-[12px] sm:text-[13px] text-gray-500 mt-2 line-clamp-2">{mascota.notas}</p>
+          )}
+          {recomendacion && (
+            <p className="text-[12px] sm:text-[13px] mt-2 flex flex-wrap items-center gap-1 sm:gap-1.5">
+              <span className="text-gray-500">Comida recomendada:</span>
+              <span className="font-bold text-raucan-lavanda">{recomendacion.texto}/día</span>
+            </p>
+          )}
+        </div>
+      </div>
+      {/* Botones en fila separada para mejor responsive */}
+      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100 sm:border-0 sm:pt-0 sm:mt-4">
+        <Link
+          to={mascotaEditarPath(mascota.id)}
+          className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-full text-sm font-bold bg-raucan-lavanda !text-white hover:opacity-90 transition-all shadow-[0_4px_16px_rgba(136,150,252,0.35)]"
+        >
+          Editar
+        </Link>
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={deleting}
+          className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-full text-sm font-bold bg-white text-gray-500 border border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.07)] hover:border-red-200 hover:text-red-600 hover:bg-red-50/50 disabled:opacity-50 transition-all"
+        >
+          {deleting ? 'Eliminando…' : 'Eliminar'}
+        </button>
       </div>
     </article>
   );
@@ -131,7 +132,7 @@ export default function MascotasPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5]" style={{ fontFamily: "'Nunito', 'Segoe UI', sans-serif" }}>
+    <main className="min-h-screen bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5]" style={{ fontFamily: "'Quicksand', system-ui, sans-serif" }}>
       <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
         <Link
           to={ROUTES.PERFIL}
