@@ -20,6 +20,8 @@ class Pedido(Base):
     notas_internas = Column(Text, nullable=True)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
+    metodo_pago = Column(String(50), nullable=False)
+    whatsapp_message_id = Column(String(50), nullable=False)
 
     usuario = relationship("Usuario", back_populates="pedidos")
     detalles = relationship("PedidoDetalle", back_populates="pedido", cascade="all, delete-orphan")
