@@ -8,7 +8,6 @@ export interface Usuario {
   apellido?: string;
   telefono: string;
   telefono_whatsapp?: string;
-  direccion?: string;
   rol?: string;
   activo?: boolean;
 }

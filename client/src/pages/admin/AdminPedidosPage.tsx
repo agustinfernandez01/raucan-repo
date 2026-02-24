@@ -51,9 +51,7 @@ export default function AdminPedidosPage() {
   }, []);
 
   const getDireccion = (pedido: Pedido): string => {
-    if (pedido.direccion_entrega) return pedido.direccion_entrega;
-    const usuario = usuarios.get(String(pedido.usuario_id));
-    return usuario?.direccion || '-';
+    return pedido.direccion_entrega || '-';
   };
 
   const pedidosFiltrados = useMemo(() => {

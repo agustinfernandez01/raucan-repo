@@ -14,11 +14,10 @@ export async function crearUsuario(data: {
   apellido: string;
   email: string;
   telefono: string;
-  direccion: string;
   rol: string;
   password: string;
 }): Promise<Usuario> {
-  return apiFetch<Usuario>('/usuarios/post-usuario', {
+  return apiFetch<Usuario>('/usuarios/post', {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -31,7 +30,6 @@ export async function actualizarUsuario(
     apellido: string;
     email: string;
     telefono: string;
-    direccion: string;
     rol: string;
     activo: boolean;
     password: string;

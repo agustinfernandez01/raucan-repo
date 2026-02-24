@@ -13,7 +13,6 @@ class CategoriaProducto(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(150), nullable=False)
     descripcion = Column(Text, nullable=True)
-    slug = Column(String(100), nullable=True)
     activo = Column(Boolean, default=True, nullable=False)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())

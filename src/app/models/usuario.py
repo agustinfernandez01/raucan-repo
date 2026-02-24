@@ -15,7 +15,6 @@ class Usuario(Base):
     email = Column(String(255), nullable=False)
     password_hash = Column(String(255), nullable=False)
     telefono = Column(String(255), nullable=False)
-    direccion = Column(String(255), nullable=False)
 
     # datos de seguridad
     rol = Column(String(255), nullable=False)

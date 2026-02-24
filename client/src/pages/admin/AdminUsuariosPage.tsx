@@ -79,7 +79,6 @@ export default function AdminUsuariosPage() {
         nombre: editingUser.nombre,
         apellido: editingUser.apellido,
         telefono: editingUser.telefono,
-        direccion: editingUser.direccion,
         rol: editingUser.rol,
       });
       setUsuarios((prev) =>
@@ -405,15 +404,6 @@ export default function AdminUsuariosPage() {
                     type="text"
                     value={editingUser.telefono || ''}
                     onChange={(e) => setEditingUser({ ...editingUser, telefono: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-                  <input
-                    type="text"
-                    value={editingUser.direccion || ''}
-                    onChange={(e) => setEditingUser({ ...editingUser, direccion: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none"
                   />
                 </div>
