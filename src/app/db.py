@@ -34,11 +34,18 @@ if not DATABASE_URL:
     else:
         DATABASE_URL = "sqlite:///./local.db"
 
-_connect_args = (
-    {"check_same_thread": False}
-    if "sqlite" in DATABASE_URL
-    else {"connect_timeout": 10}
-)
+_connect_args = {}
+
+if DATABASE_URL.startswith("sqlite"):
+    _connect_args = {"check_same_thread": False}
+
+elif DATABASE_URL.startswith("mysql"):
+    _connect_args = {"connect_timeout": 10}
+
+elif DATABASE_URL.startswith("postgresql"):
+    # psycopg2 no usa connect_timeout en connect_args
+    _connect_args = {}
+
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
