@@ -31,8 +31,10 @@ export default function Header() {
 
   const adminLink: React.CSSProperties = {
     ...linkBase,
-    color: '#ffa9e0',
-    background: isActive(ADMIN_ROUTES.DASHBOARD) ? 'rgba(255,169,224,0.12)' : 'transparent',
+    color: 'white',
+    background: 'linear-gradient(135deg, #8896fc 0%, #ffa9e0 100%)',
+    padding: '8px 16px',
+    boxShadow: '0 2px 8px rgba(136,150,252,0.3)',
   };
 
   return (
@@ -40,7 +42,7 @@ export default function Header() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
         .h-navlink:hover { color: #8896fc !important; background: rgba(136,150,252,0.08) !important; }
-        .h-adminlink:hover { color: #d946a8 !important; background: rgba(255,169,224,0.12) !important; }
+        .h-adminlink:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(136,150,252,0.4) !important; }
         .h-logout:hover { color: #e11d48 !important; background: #fff1f2 !important; }
         .h-loginbtn:hover { opacity: 0.88; transform: translateY(-1px); }
         @media (max-width: 640px) {

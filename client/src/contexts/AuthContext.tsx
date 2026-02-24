@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import * as authService from '../services/auth';
+import { getUsuario } from '../services/usuarios';
 
 export interface User {
   id: string;
@@ -71,14 +72,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Restaurar sesión desde token al cargar
   useEffect(() => {
-    const token = authService.getStoredToken();
-    if (token) {
-      const payload = authService.decodeTokenPayload(token);
-      if (payload?.sub) {
-        setUserState(userFromToken(payload.sub, ''));
+    const restoreSession = async () => {
+      const token = authService.getStoredToken();
+      if (token) {
+        const payload = authService.decodeTokenPayload(token);
+        if (payload?.sub) {
+          try {
+            const userData = await getUsuario(payload.sub);
+            setUserState(userFromApi(userData));
+          } catch {
+            setUserState(userFromToken(payload.sub, ''));
+          }
+        }
       }
-    }
-    setAuthChecked(true);
+      setAuthChecked(true);
+    };
+    restoreSession();
   }, []);
 
   const value: AuthContextValue = {

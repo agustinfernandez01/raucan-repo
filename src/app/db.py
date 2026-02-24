@@ -34,11 +34,12 @@ if not DATABASE_URL:
     else:
         DATABASE_URL = "sqlite:///./local.db"
 
-_connect_args = (
-    {"check_same_thread": False}
-    if "sqlite" in DATABASE_URL
-    else {"connect_timeout": 10}
-)
+if "sqlite" in DATABASE_URL:
+    _connect_args = {"check_same_thread": False}
+elif "postgresql" in DATABASE_URL:
+    _connect_args = {}
+else:
+    _connect_args = {"connect_timeout": 10}
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,

@@ -129,7 +129,7 @@ function CarritoItemCard({
 
 export default function CarritoPage() {
   const { items, updateItem, removeItem, clear } = useCarrito();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -143,7 +143,7 @@ export default function CarritoPage() {
   const totalKg = items.reduce((acc, i) => acc + i.cantidadKg, 0);
 
   const handleConfirmar = async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user?.id) {
       navigate(ROUTES.LOGIN, { state: { from: ROUTES.CARRITO } });
       return;
     }
@@ -152,7 +152,16 @@ export default function CarritoPage() {
     setIsSubmitting(true);
     setError(null);
     try {
-      const pedido = await crearPedido({});
+      const detalles = items.map((item) => ({
+        producto_id: Number(item.producto.id),
+        cantidad_kg: item.cantidadKg,
+        precio_por_kg: item.producto.precioPorKg ?? item.producto.precio_por_kg ?? 0,
+      }));
+
+      const pedido = await crearPedido({
+        usuario_id: Number(user.id),
+        detalles,
+      });
       clear();
       navigate(`/pedidos/${pedido.id}`);
     } catch (e) {

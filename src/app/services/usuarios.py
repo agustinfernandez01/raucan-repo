@@ -15,6 +15,30 @@ def get_usuario(db: Session, usuario_id: int) -> UsuarioResponse:
     """Obtiene un usuario por su ID."""
     return db.query(models_usuario.Usuario).filter(models_usuario.Usuario.id == usuario_id).first()
 
+
+#OBTENER USUARIO POR TELÉFONO
+def get_usuario_por_telefono(db: Session, telefono: str):
+    """
+    Obtiene un usuario por su teléfono.
+    Busca tanto el número con código de país (54...) como sin él.
+    """
+    telefono = telefono.strip().replace(" ", "").replace("-", "").replace("+", "")
+    
+    # Si viene con código 54, también buscar sin él
+    if telefono.startswith("54"):
+        telefono_sin_codigo = telefono[2:]
+        return db.query(models_usuario.Usuario).filter(
+            (models_usuario.Usuario.telefono == telefono) |
+            (models_usuario.Usuario.telefono == telefono_sin_codigo)
+        ).first()
+    
+    # Si no tiene código, buscar también con 54
+    telefono_con_codigo = f"54{telefono}"
+    return db.query(models_usuario.Usuario).filter(
+        (models_usuario.Usuario.telefono == telefono) |
+        (models_usuario.Usuario.telefono == telefono_con_codigo)
+    ).first()
+
 #CREAR USUARIO
 def create_usuario(db: Session, usuario: UsuarioCreate):
     # 1) Chequear si existe el email (query eficiente)

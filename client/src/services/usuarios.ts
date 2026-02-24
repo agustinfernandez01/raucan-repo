@@ -2,7 +2,7 @@ import { apiFetch } from './api';
 import type { Usuario } from '../types/usuario';
 
 export async function getUsuarios(): Promise<Usuario[]> {
-  return apiFetch<Usuario[]>('/usuarios/get-usuarios');
+  return apiFetch<Usuario[]>('/usuarios/get');
 }
 
 export async function getUsuario(id: string | number): Promise<Usuario> {

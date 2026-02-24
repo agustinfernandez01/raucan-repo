@@ -16,8 +16,11 @@ function normalizeProducto(raw: Record<string, unknown>): Producto {
     id: String(raw.id),
     nombre: String(raw.nombre),
     precioPorKg: Number(raw.precio_por_kg ?? raw.precioPorKg ?? 0),
+    precio_por_kg: Number(raw.precio_por_kg ?? raw.precioPorKg ?? 0),
     descripcion: raw.descripcion != null ? String(raw.descripcion) : undefined,
+    categoria_id: raw.categoria_id != null ? Number(raw.categoria_id) : undefined,
     categoria: raw.categoria != null ? String(raw.categoria) : undefined,
     imagen_url: raw.imagen_url != null ? String(raw.imagen_url) : undefined,
+    activo: raw.activo !== false,
   };
 }

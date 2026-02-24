@@ -29,7 +29,7 @@ function CalculadoraComida({
   const pesosRapidos = esGato ? PESOS_RAPIDOS_GATO : PESOS_RAPIDOS_PERRO;
 
   return (
-    <div className="bg-white rounded-[18px] shadow-[0_4px_20px_rgba(0,0,0,0.07)] p-4 sm:p-6 h-full flex flex-col overflow-hidden">
+    <div className="bg-white rounded-[18px] shadow-[0_4px_20px_rgba(0,0,0,0.07)] p-4 sm:p-6">
       <div className="flex items-center gap-3 pb-3 border-b border-gray-100 mb-4">
         <span className="text-2xl sm:text-3xl">🥣</span>
         <div>
@@ -73,8 +73,8 @@ function CalculadoraComida({
           })}
         </div>
       </div>
-      <div className="flex-1 flex flex-col justify-center min-h-[120px] sm:min-h-[140px]">
-        <div className="bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5] rounded-[14px] sm:rounded-[18px] p-4 sm:p-6 border-2 border-dashed border-raucan-lavanda/30">
+      <div className="mt-2">
+        <div className="bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5] rounded-[14px] sm:rounded-[18px] p-4 sm:p-5 border-2 border-dashed border-raucan-lavanda/30">
           <p className="text-[12px] sm:text-[13px] font-semibold text-gray-500 mb-1">Recomendación diaria</p>
           <div className="flex items-baseline gap-2 flex-wrap">
             {recomendacion ? (
@@ -360,7 +360,7 @@ export default function MascotaFormPage() {
               </form>
             </div>
           </div>
-          <div className="lg:min-h-[420px]">
+          <div>
             <CalculadoraComida
               especie={especie}
               pesoKg={calculatorPeso}
