@@ -1,7 +1,7 @@
 import { apiFetch } from './api';
-import type { Producto } from '../types/producto';
+import type { Producto, ProductoCreate, ProductoUpdate } from '../types/producto';
 
-
+// por categoria o todos
 export async function getProductos(categoria_producto_id: number | undefined): Promise<Producto[]> {
 
   if (categoria_producto_id !== undefined) {
@@ -12,27 +12,35 @@ export async function getProductos(categoria_producto_id: number | undefined): P
   return data;
 }
 
-<<<<<<< HEAD
-export async function getProducto(id: number): Promise<Producto> {
+// por id
+export async function getProductoById(id: number): Promise<Producto> {
   const data = await apiFetch<Producto>(`/productos/getproductos/${id}`);
   return data;
-=======
-export async function getProducto(id: string): Promise<Producto> {
-  const data = await apiFetch<Record<string, unknown>>(`/productos/${id}`);
-  return normalizeProducto(data);
 }
 
-function normalizeProducto(raw: Record<string, unknown>): Producto {
-  return {
-    id: String(raw.id),
-    nombre: String(raw.nombre),
-    precioPorKg: Number(raw.precio_por_kg ?? raw.precioPorKg ?? 0),
-    precio_por_kg: Number(raw.precio_por_kg ?? raw.precioPorKg ?? 0),
-    descripcion: raw.descripcion != null ? String(raw.descripcion) : undefined,
-    categoria_id: raw.categoria_id != null ? Number(raw.categoria_id) : undefined,
-    categoria: raw.categoria != null ? String(raw.categoria) : undefined,
-    imagen_url: raw.imagen_url != null ? String(raw.imagen_url) : undefined,
-    activo: raw.activo !== false,
-  };
->>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
+// crear
+export async function crearProducto(producto: ProductoCreate): Promise<Producto> {
+  const data = await apiFetch<Producto>('/productos/postproductos', {
+    method: 'POST',
+    body: JSON.stringify(producto),
+  });
+  return data;
 }
+
+// actualizar
+export async function actualizarProducto(id: number, producto: ProductoUpdate): Promise<Producto> {
+  const data = await apiFetch<Producto>(`/productos/patchproductos/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(producto),
+  });
+  return data;
+}
+
+// eliminar
+
+  export async function eliminarProducto(id: number): Promise<void> {
+    const data = await apiFetch<void>(`/productos/deleteproductos/${id}`, {
+      method: 'DELETE',
+    });
+    return data;
+  }
