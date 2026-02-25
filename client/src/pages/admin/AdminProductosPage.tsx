@@ -20,33 +20,6 @@ export default function AdminProductosPage() {
   const [filterCategoria, setFilterCategoria] = useState('todas');
   const [filterActivo, setFilterActivo] = useState('todos');
 
-  useEffect(() => {
-    let cancelled = false;
-    const loadProductos = async () => {
-      try {
-        const data = await getProductos();
-        if (!cancelled) {
-          const mapped = data.map((p) => ({
-            id: Number(p.id),
-            nombre: p.nombre,
-            descripcion: p.descripcion ?? null,
-            precio_por_kg: p.precioPorKg || p.precio_por_kg || 0,
-            categoria_id: (p as unknown as { categoria_id?: number }).categoria_id ?? 0,
-            categoria: p.categoria ?? null,
-            activo: (p as unknown as { activo?: boolean }).activo !== false,
-          }));
-          setProductos(mapped);
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Error al cargar productos');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-    loadProductos();
-    return () => { cancelled = true; };
-  }, []);
-
   const categorias = useMemo(() => {
     const cats = new Set(productos.map((p) => p.categoria).filter(Boolean));
     return Array.from(cats) as string[];

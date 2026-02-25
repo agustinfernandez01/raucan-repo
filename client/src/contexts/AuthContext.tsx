@@ -13,13 +13,9 @@ interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
-<<<<<<< HEAD
-  login: (email: string, password: string) => Promise<void>;
-=======
   /** False hasta haber revisado el token en localStorage (evita redirigir al login al recargar) */
   authChecked: boolean;
-  login: (email: string, password: string, telefono: string) => Promise<void>;
->>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
 }
