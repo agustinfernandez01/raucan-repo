@@ -39,7 +39,7 @@ class PedidoDetalleResponse(BaseModel):
 class PedidoBase(BaseModel):
     usuario_id: int
     estado: str = "pendiente"
-    metodo_pago: str | None = None  # efectivo, transferencia
+    metodo_pago: str | None = None
     total: float
     direccion_entrega: str | None = None
     mensaje_enviado: str | None = None
@@ -55,8 +55,6 @@ class PedidoCreate(BaseModel):
     canal_mensaje: str | None = None
     notas_internas: str | None = None
     detalles: list[PedidoDetalleCreate]
-
-    # total se calcula en el servicio a partir de los detalles
 
 
 class PedidoUpdate(BaseModel):
@@ -77,10 +75,10 @@ class PedidoResponse(BaseModel):
     estado: str
     metodo_pago: str | None = None
     total: float
-    direccion_entrega: str | None
-    mensaje_enviado: str | None
-    canal_mensaje: str | None
-    notas_internas: str | None
+    direccion_entrega: str | None = None
+    mensaje_enviado: str | None = None
+    canal_mensaje: str | None = None
+    notas_internas: str | None = None
     creado_en: datetime | None = None
     actualizado_en: datetime | None = None
 

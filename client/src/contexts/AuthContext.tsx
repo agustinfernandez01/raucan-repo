@@ -28,22 +28,29 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 const DEV_ADMIN = import.meta.env.VITE_DEV_ADMIN === 'true';
 
+function normalizeRol(rol?: string | null): string {
+  if (!rol) return DEV_ADMIN ? 'admin' : 'cliente';
+  const r = rol.toLowerCase();
+  if (r === 'admin' || r === 'administrador') return 'admin';
+  return r;
+}
+
 function userFromApi(raw: unknown): User {
   const o = raw as Record<string, unknown>;
   return {
     id: String(o?.id ?? ''),
     email: String(o?.email ?? ''),
     nombre: String(o?.nombre ?? ''),
-    rol: o?.rol != null ? String(o.rol) : DEV_ADMIN ? 'admin' : undefined,
+    rol: normalizeRol(o?.rol as string | null),
   };
 }
 
-function userFromToken(sub: string, email: string): User {
+function userFromToken(sub: string, email: string, role?: string): User {
   return {
     id: sub,
     email,
     nombre: 'Usuario',
-    rol: DEV_ADMIN ? 'admin' : 'cliente',
+    rol: normalizeRol(role),
   };
 }
 
@@ -59,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const u =
         res.usuario != null
           ? userFromApi(res.usuario)
-          : userFromToken(payload?.sub ?? '', email);
+          : userFromToken(payload?.sub ?? '', email, payload?.role);
       setUserState(u);
     }
   }, []);
@@ -85,7 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userData = await getUsuario(payload.sub);
             setUserState(userFromApi(userData));
           } catch {
-            setUserState(userFromToken(payload.sub, ''));
+            // Si falla la API, usar el rol del token
+            setUserState(userFromToken(payload.sub, '', payload.role));
           }
         }
       }

@@ -38,12 +38,12 @@ export function clearStoredToken(): void {
 }
 
 /** Decodifica el payload del JWT sin verificar (solo para leer sub en el cliente) */
-export function decodeTokenPayload(token: string): { sub?: string } | null {
+export function decodeTokenPayload(token: string): { sub?: string; role?: string } | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
     const payload = JSON.parse(atob(parts[1]));
-    return payload as { sub?: string };
+    return payload as { sub?: string; role?: string };
   } catch {
     return null;
   }
