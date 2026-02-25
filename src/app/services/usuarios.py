@@ -55,7 +55,7 @@ def create_usuario(db: Session, usuario: UsuarioCreate):
         email=usuario.email,
         password_hash=hash_password(usuario.password), 
         telefono=usuario.telefono,
-        rol=usuario.rol,
+        rol="user",
         activo=usuario.activo,
         creado_en=datetime.now(),
     )
