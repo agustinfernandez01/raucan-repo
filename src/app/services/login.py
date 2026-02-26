@@ -25,9 +25,15 @@ def Logueo(db: Session, login_request: LoginRequest) -> LoginResponse:
     )
 
     # Seguridad: no revelar qué falló
-    if not usuario or not bcrypt.checkpw(
+    if not usuario:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciales inválidas"
+        )
+    hash_bytes = usuario.password_hash if isinstance(usuario.password_hash, bytes) else (usuario.password_hash or "").encode("utf-8")
+    if not hash_bytes or not bcrypt.checkpw(
         login_request.password.encode("utf-8"),
-        usuario.password_hash.encode("utf-8"),
+        hash_bytes,
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

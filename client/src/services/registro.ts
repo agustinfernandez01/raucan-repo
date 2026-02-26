@@ -1,13 +1,11 @@
 import type { UsuarioCreate } from "../types/usuario";
-
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000';
+import { apiFetch } from "./api";
 
 export async function registro(data: UsuarioCreate, path: string) {
-    const response = await fetch(`${API_BASE}${path}`, {
+    return apiFetch(path, {
         method: 'POST',
         body: JSON.stringify(data),
     });
-    return response.json();
 }
 
 

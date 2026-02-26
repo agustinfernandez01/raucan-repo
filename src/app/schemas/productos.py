@@ -1,21 +1,10 @@
-<<<<<<< HEAD
-from pydantic import BaseModel, ConfigDict
-from app.schemas.categoria_producto import CategoriaProductoSimple
-=======
-from pydantic import BaseModel, ConfigDict, computed_field
-
->>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
+from pydantic import BaseModel, ConfigDict, model_validator
 
 class ProductoBase(BaseModel):
     nombre: str
     precio_por_kg: float
     descripcion: str | None = None
-<<<<<<< HEAD
-    categoria_producto: CategoriaProductoSimple | None = None
-    imagen_url: str | None = None
-=======
     categoria_id: int
->>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
     activo: bool = True
 
 
@@ -26,9 +15,27 @@ class ProductoResponse(BaseModel):
     nombre: str
     precio_por_kg: float
     descripcion: str | None = None
-    categoria_id: int
+    categoria_id: int | None = None
     categoria: str | None = None
     activo: bool = True
+
+    @model_validator(mode='before')
+    @classmethod
+    def from_orm_with_categoria(cls, data):
+        """Rellena 'categoria' desde la relación categoria_producto si viene un ORM."""
+        if hasattr(data, 'categoria_producto'):
+            cat = getattr(data, 'categoria_producto', None)
+            nombre_cat = cat.nombre if cat else None
+            return {
+                'id': data.id,
+                'nombre': data.nombre,
+                'precio_por_kg': data.precio_por_kg,
+                'descripcion': data.descripcion,
+                'categoria_id': getattr(data, 'categoria_id', None),
+                'categoria': nombre_cat,
+                'activo': getattr(data, 'activo', True),
+            }
+        return data
 
 
 class ProductoCreate(ProductoBase):
@@ -45,12 +52,7 @@ class ProductoPatch(BaseModel):
     nombre: str | None = None
     precio_por_kg: float | None = None
     descripcion: str | None = None
-<<<<<<< HEAD
-    categoria_producto: CategoriaProductoSimple | None = None
-    imagen_url: str | None = None
-=======
     categoria_id: int | None = None
->>>>>>> c68e60eec249b95d81c05e3ddb309e7faa71df16
     activo: bool | None = None
 
 

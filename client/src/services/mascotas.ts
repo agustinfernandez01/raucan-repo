@@ -1,5 +1,7 @@
-import { apiFetch } from './api';
+import { apiFetch, API_BASE } from './api';
 import type { Mascota } from '../types/mascota';
+
+const TOKEN_KEY = 'raucan_token';
 
 export async function getMascotas(usuarioId?: string | number): Promise<Mascota[]> {
   const qs = usuarioId != null ? `?usuario_id=${usuarioId}` : '';
@@ -26,4 +28,25 @@ export async function updateMascota(id: string | number, data: Partial<Mascota>)
 
 export async function deleteMascota(id: string | number): Promise<void> {
   await apiFetch(`/mascotas/${id}`, { method: 'DELETE' });
+}
+
+/** Sube una foto para la mascota (multipart/form-data). Devuelve la mascota actualizada con foto_url. */
+export async function uploadMascotaFoto(id: string | number, file: File): Promise<Mascota> {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null;
+  const formData = new FormData();
+  formData.append('file', file);
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  const res = await fetch(`${API_BASE}/mascotas/${id}/foto`, {
+    method: 'PATCH',
+    body: formData,
+    headers,
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Error ${res.status}`);
+  }
+  return res.json();
 }

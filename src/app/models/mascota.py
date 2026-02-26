@@ -18,6 +18,7 @@ class Mascota(Base):
     fecha_nacimiento = Column(Date, nullable=True)
     peso_kg = Column(Float, nullable=True)
     notas = Column(Text, nullable=True)
+    foto_url = Column(String(500), nullable=True)  # URL o path de la foto (ej. /uploads/mascotas/xxx.jpg)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
 

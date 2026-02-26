@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { getMascota, createMascota, updateMascota } from '../../services/mascotas';
+import { getMascota, createMascota, updateMascota, uploadMascotaFoto } from '../../services/mascotas';
 import type { Mascota } from '../../types/mascota';
 import { ROUTES } from '../../constants/routes';
 import { getRecomendacionAlimento, DISCLAIMER_RECOMENDACION } from '../../utils/recomendacionAlimento';
+import { API_BASE } from '../../services/api';
 
 const ESPECIES = ['Perro', 'Gato', 'Otro'];
 
@@ -118,8 +120,25 @@ export default function MascotaFormPage() {
   const [fechaNacimiento, setFechaNacimiento] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
 
   const isEdit = !!id;
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      setFotoFile(file);
+      setFotoPreview(URL.createObjectURL(file));
+    }
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp'] },
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024,
+    disabled: saving,
+  });
 
   useEffect(() => {
     if (id && user?.id) {
@@ -134,6 +153,7 @@ export default function MascotaFormPage() {
           setNotas(m.notas ?? '');
           setFechaNacimiento(m.fecha_nacimiento ?? '');
           setCalculatorPeso(m.peso_kg != null ? String(m.peso_kg) : '');
+          setFotoPreview(m.foto_url ? `${API_BASE}${m.foto_url}` : null);
         })
         .catch(() => setMascota(null))
         .finally(() => setLoading(false));
@@ -187,10 +207,16 @@ export default function MascotaFormPage() {
         notas: notas.trim() || undefined,
         fecha_nacimiento: fechaNacimiento || undefined,
       };
+      let mascotaId: string | number;
       if (mascota) {
         await updateMascota(mascota.id, payload);
+        mascotaId = mascota.id;
       } else {
-        await createMascota(payload);
+        const creada = await createMascota(payload);
+        mascotaId = creada.id;
+      }
+      if (fotoFile) {
+        await uploadMascotaFoto(mascotaId, fotoFile);
       }
       navigate(ROUTES.MASCOTAS);
     } catch (err) {
@@ -251,6 +277,36 @@ export default function MascotaFormPage() {
                 </div>
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
+
+                <div>
+                  <label className="block text-sm font-semibold text-raucan-lavanda mb-1">Foto</label>
+                  <div
+                    {...getRootProps()}
+                    className={`w-full min-h-[80px] px-3 py-2.5 sm:py-2 rounded-lg border border-dashed cursor-pointer transition-colors flex items-center justify-center text-center ${
+                      isDragActive
+                        ? 'border-raucan-lavanda bg-raucan-lavanda/5 focus:ring-2 focus:ring-raucan-lavanda/50'
+                        : 'border-gray-200 hover:border-gray-300 focus-within:ring-2 focus-within:ring-raucan-lavanda/50 focus-within:border-raucan-lavanda'
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    {fotoPreview ? (
+                      <div className="flex flex-col items-center gap-1.5">
+                        <img
+                          src={fotoPreview}
+                          alt="Vista previa"
+                          className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                        />
+                        <span className="text-xs text-gray-500">Hacé click o arrastrá otra para cambiar</span>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">
+                        {isDragActive ? 'Soltá la imagen acá' : 'Arrastrá una foto o hacé click para elegir'}
+                      </p>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">JPG, PNG, GIF o WebP. Máx. 5 MB.</p>
+                </div>
+
                 <div>
                   <label htmlFor="nombre" className="block text-sm font-semibold text-raucan-lavanda mb-1">
                     Nombre *

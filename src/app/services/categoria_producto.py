@@ -6,6 +6,12 @@ def listar_categorias_productos(db: Session) -> list[CategoriaProductoResponse]:
     """Lista todas las categorías de productos."""
     return db.query(CategoriaProducto).all()
 
+
+def obtener_categoria_producto(db: Session, categoria_producto_id: int) -> CategoriaProductoResponse | None:
+    """Obtiene una categoría de producto por su ID. Retorna None si no existe."""
+    return db.query(CategoriaProducto).filter(CategoriaProducto.id == categoria_producto_id).first()
+
+
 def crear_categoria_producto(db: Session, categoria_producto: CategoriaProductoCreate) -> CategoriaProductoResponse:
     """Crea una nueva categoría de producto."""
     nueva_categoria = CategoriaProducto(nombre=categoria_producto.nombre, descripcion=categoria_producto.descripcion)

@@ -39,20 +39,25 @@ def get_usuario_por_telefono(db: Session, telefono: str):
         (models_usuario.Usuario.telefono == telefono_con_codigo)
     ).first()
 
+def _normalizar_email(e: str) -> str:
+    return (e or "").strip().lower()
+
+
 #CREAR USUARIO
 def create_usuario(db: Session, usuario: UsuarioCreate):
+    email_norm = _normalizar_email(usuario.email)
     # 1) Chequear si existe el email (query eficiente)
     existe = db.query(models_usuario.Usuario).filter(
-        models_usuario.Usuario.email == usuario.email
+        models_usuario.Usuario.email == email_norm
     ).first()
 
     if existe:
         raise ValueError("Error, usuario ya existe")
-    # 2) Crear usuario
+    # 2) Crear usuario (email en minúsculas para que coincida con el login)
     db_usuario = models_usuario.Usuario(
         nombre=usuario.nombre,
         apellido=usuario.apellido,
-        email=usuario.email,
+        email=email_norm,
         password_hash=hash_password(usuario.password), 
         telefono=usuario.telefono,
         rol=usuario.rol,

@@ -11,6 +11,7 @@ class MascotaBase(BaseModel):
     fecha_nacimiento: date | None = None
     peso_kg: float | None = None
     notas: str | None = None
+    foto_url: str | None = None
 
 
 class MascotaCreate(MascotaBase):
@@ -25,6 +26,7 @@ class MascotaUpdate(BaseModel):
     fecha_nacimiento: date | None = None
     peso_kg: float | None = None
     notas: str | None = None
+    foto_url: str | None = None
 
 
 class MascotaResponse(MascotaBase):

@@ -30,10 +30,10 @@ export default function AdminProductosPage() {
             id: Number(p.id),
             nombre: p.nombre,
             descripcion: p.descripcion ?? null,
-            precio_por_kg: p.precioPorKg || p.precio_por_kg || 0,
-            categoria_id: (p as unknown as { categoria_id?: number }).categoria_id ?? 0,
+            precio_por_kg: p.precioPorKg ?? p.precio_por_kg ?? 0,
+            categoria_id: p.categoria_id ?? 0,
             categoria: p.categoria ?? null,
-            activo: (p as unknown as { activo?: boolean }).activo !== false,
+            activo: p.activo !== false,
           }));
           setProductos(mapped);
         }

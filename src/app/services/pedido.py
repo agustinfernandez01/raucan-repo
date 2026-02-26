@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models import pedido as models_pedido
+from app.models.productos import Productos
 from app.schemas.pedido import (
     PedidoCreate,
     PedidoDetalleCreate,
@@ -69,41 +70,71 @@ def crear(db: Session, datos: PedidoCreate, enviar_whatsapp: bool = True):
     db.commit()
     db.refresh(pedido)
 
-    # Enviar mensaje de WhatsApp si está habilitado
+    # Enviar WhatsApp al cliente que hizo el pedido (su teléfono = usuario.telefono)
     if enviar_whatsapp:
         try:
             usuario = svc_usuarios.get_usuario(db, pedido.usuario_id)
             if usuario and usuario.telefono:
                 resumen_texto = "\n".join(productos_resumen)
-                
-                # Primero enviar template hello_world para abrir la conversación
-                # (requerido por WhatsApp si el usuario no nos escribió en 24h)
+                nombre_cliente = (usuario.nombre or "").strip() or "Cliente"
+                telefono_display = svc_whatsapp._formatear_telefono_para_display(usuario.telefono)
+                direccion = (pedido.direccion_entrega or "").strip() or ""
+                total_formateado = f"${pedido.total:,.0f}".replace(",", ".")  # ej. $24.500
+
+                # Lista de productos con nombre para la plantilla (ej. "Pack 5kg BARF para perro: $24.500")
+                product_ids = [d.producto_id for d in pedido.detalles]
+                id_a_nombre = {}
+                if product_ids:
+                    for p in db.query(Productos).filter(Productos.id.in_(product_ids)).all():
+                        id_a_nombre[p.id] = p.nombre
+                lineas_productos = []
+                for d in pedido.detalles:
+                    nombre_prod = id_a_nombre.get(d.producto_id) or f"Producto {d.producto_id}"
+                    subtotal_str = f"${(d.subtotal or 0):,.0f}".replace(",", ".")
+                    lineas_productos.append(f"{nombre_prod}: {subtotal_str}")
+                productos_texto = "\n".join(lineas_productos)
+
+                # Enviar plantilla "resumen de pedido" (Pedido #, Nombre, Teléfono, Dirección, Total, Tu pedido + botones Efectivo/Transferencia)
                 try:
-                    svc_whatsapp.enviar_template_hello_world(telefono=usuario.telefono)
-                except Exception as template_error:
-                    print(f"Template hello_world error (puede ser normal): {template_error}")
-                
-                # Luego enviar el mensaje con detalles del pedido
-                mensaje = (
-                    f"🐾 *Raucan - Pedido #{pedido.id} Confirmado*\n\n"
-                    f"📦 *Productos:*\n{resumen_texto}\n\n"
-                    f"💰 *Total:* ${pedido.total:,.2f}\n\n"
-                    f"¿Cómo preferís abonar?\n"
-                    f"Respondé con *1* para 💵 Efectivo\n"
-                    f"Respondé con *2* para 🏦 Transferencia\n\n"
-                    f"¡Gracias por elegirnos! 🐕"
-                )
-                resultado = svc_whatsapp.enviar_mensaje_texto(
-                    telefono=usuario.telefono,
-                    mensaje=mensaje
-                )
-                # Guardar el ID del mensaje de WhatsApp
-                if resultado and "messages" in resultado:
-                    wa_msg_id = resultado["messages"][0].get("id")
-                    pedido.whatsapp_message_id = wa_msg_id
-                    pedido.canal_mensaje = "whatsapp"
-                    db.commit()
-                    db.refresh(pedido)
+                    resultado = svc_whatsapp.enviar_template_resumen_pedido(
+                        telefono=usuario.telefono,
+                        pedido_id=pedido.id,
+                        nombre_cliente=nombre_cliente,
+                        telefono_display=telefono_display,
+                        direccion=direccion,
+                        total_formateado=total_formateado,
+                        productos_texto=productos_texto,
+                    )
+                    if resultado and "messages" in resultado:
+                        wa_msg_id = resultado["messages"][0].get("id")
+                        pedido.whatsapp_message_id = wa_msg_id
+                        pedido.canal_mensaje = "whatsapp"
+                        db.commit()
+                        db.refresh(pedido)
+                except Exception as template_err:
+                    err_msg = str(template_err)
+                    if "401" in err_msg or "Unauthorized" in err_msg:
+                        print("WhatsApp 401: revisá WHATSAPP_ACCESS_TOKEN en .env (token válido, no vencido, con permiso whatsapp_business_messaging).")
+                    elif "131030" in err_msg or "not in allowed list" in err_msg.lower():
+                        print("WhatsApp 131030: el número del cliente no está en la lista de autorizados. En desarrollo solo podés enviar a números agregados en Meta for Developers → Tu app → WhatsApp → Números de teléfono de prueba.")
+                    else:
+                        print(f"Template pedido_confirmado error (nombre/orden de variables en Meta): {template_err}")
+                    # Respaldo: mensaje de texto
+                    mensaje = (
+                        f"🐾 *Raucan - Pedido #{pedido.id} Confirmado*\n\n"
+                        f"📦 *Productos:*\n{resumen_texto}\n\n"
+                        f"💰 *Total:* ${pedido.total:,.2f}\n\n"
+                        f"¿Cómo preferís abonar? Respondé 1 Efectivo / 2 Transferencia. ¡Gracias! 🐕"
+                    )
+                    resultado = svc_whatsapp.enviar_mensaje_texto(
+                        telefono=usuario.telefono,
+                        mensaje=mensaje
+                    )
+                    if resultado and "messages" in resultado:
+                        pedido.whatsapp_message_id = resultado["messages"][0].get("id")
+                        pedido.canal_mensaje = "whatsapp"
+                        db.commit()
+                        db.refresh(pedido)
         except Exception as e:
             print(f"Error enviando WhatsApp: {e}")
 

@@ -8,10 +8,16 @@ load_dotenv(env_path)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
-from app.routers import carrito, login, mascota, pedido, productos, usuarios, stock_deposito, deposito, whatsapp
+from app.routers import carrito, categoria_producto, login, mascota, pedido, productos, usuarios, stock_deposito, deposito, whatsapp
+
+
+# Carpeta para archivos subidos (fotos de mascotas, etc.)
+UPLOADS_DIR = Path(__file__).resolve().parent.parent / "uploads"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @asynccontextmanager
@@ -45,6 +51,7 @@ app.include_router(usuarios.router, prefix="/usuarios", tags=["usuarios"])
 app.include_router(carrito.router, prefix="/carrito", tags=["carrito"])
 app.include_router(pedido.router, prefix="/pedidos", tags=["pedidos"])
 app.include_router(mascota.router, prefix="/mascotas", tags=["mascotas"])
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 app.include_router(deposito.router, prefix="/depositos", tags=["depositos"])
 app.include_router(stock_deposito.router, prefix="/stock_deposito", tags=["stock_deposito"])
 app.include_router(categoria_producto.router, prefix="/categoria_producto", tags=["categoria_producto"])

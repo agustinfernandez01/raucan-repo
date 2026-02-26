@@ -10,4 +10,5 @@ export interface Mascota {
   fecha_nacimiento?: string;
   peso_kg?: number;
   notas?: string;
+  foto_url?: string | null;
 }

@@ -30,7 +30,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to={ROUTES.PRODUCTOS} replace /> },
       { path: 'login', element: <LoginPage /> },
-      { path: 'register', element: <RegisterPage /> },
+      { path: 'registro', element: <RegisterPage /> },
+      { path: 'register', element: <Navigate to={ROUTES.REGISTER} replace /> },
       { path: 'productos', element: <ProductosPage /> },
       { path: 'productos/:id', element: <ProductoDetailPage /> },
       { path: 'carrito', element: <CarritoPage /> },
