@@ -31,8 +31,8 @@ export default function AdminProductosPage() {
             nombre: p.nombre,
             descripcion: p.descripcion ?? null,
             precio_por_kg: p.precioPorKg ?? p.precio_por_kg ?? 0,
-            categoria_id: p.categoria_id ?? 0,
-            categoria: p.categoria ?? null,
+            categoria_id: p.categoria_id ?? (p.categoria_producto?.id ?? 0),
+            categoria: p.categoria ?? p.categoria_producto?.nombre ?? null,
             activo: p.activo !== false,
           }));
           setProductos(mapped);

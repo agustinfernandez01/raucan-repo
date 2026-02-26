@@ -21,7 +21,9 @@ import AdminPedidoDetailPage from '../pages/admin/AdminPedidoDetailPage';
 import AdminProductosPage from '../pages/admin/AdminProductosPage';
 import AdminUsuariosPage from '../pages/admin/AdminUsuariosPage';
 import AdminStockPage from '../pages/admin/AdminStockPage';
+import AdminPanelPage from '../pages/admin/AdminPanelPage';
 import NotFoundPage from '../pages/not-found/NotFoundPage';
+
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,7 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboardPage /> },
+          { path: 'panel', element: <AdminPanelPage /> },
           { path: 'pedidos', element: <AdminPedidosPage /> },
           { path: 'pedidos/:id', element: <AdminPedidoDetailPage /> },
           { path: 'productos', element: <AdminProductosPage /> },

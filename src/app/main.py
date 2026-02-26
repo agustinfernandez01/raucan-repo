@@ -14,7 +14,6 @@ from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
 from app.routers import carrito, categoria_producto, login, mascota, pedido, productos, usuarios, stock_deposito, deposito, whatsapp
 
-
 # Carpeta para archivos subidos (fotos de mascotas, etc.)
 UPLOADS_DIR = Path(__file__).resolve().parent.parent / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
@@ -55,6 +54,7 @@ app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 app.include_router(deposito.router, prefix="/depositos", tags=["depositos"])
 app.include_router(stock_deposito.router, prefix="/stock_deposito", tags=["stock_deposito"])
 app.include_router(categoria_producto.router, prefix="/categoria_producto", tags=["categoria_producto"])
+app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
 
 
 @app.get("/health")

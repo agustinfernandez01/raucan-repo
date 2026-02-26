@@ -15,15 +15,14 @@ def listar(db: Session, categoria_producto_id: int | None = None) -> list[Produc
     return list(query.order_by(models_producto.Productos.nombre).all())
 
 
-def obtener_producto_id(db: Session, producto_id: int) -> ProductoResponse | None:
+def obtener_producto_id(db: Session, producto_id: int):
     """Obtiene un producto por su id. Retorna None si no existe."""
-    producto = (
+    return (
         db.query(models_producto.Productos)
         .options(joinedload(models_producto.Productos.categoria_producto))
         .filter(models_producto.Productos.id == producto_id)
         .first()
     )
-    return producto
 
 
 def crear_producto(db: Session, datos: ProductoCreate) -> ProductoResponse:
@@ -37,7 +36,7 @@ def crear_producto(db: Session, datos: ProductoCreate) -> ProductoResponse:
 
 def actualizar_producto(db: Session, producto_id: int, datos: ProductoUpdate) -> ProductoResponse | None:
     """Actualiza un producto. Retorna el producto actualizado o None si no existe."""
-    producto = db.query(models_producto.Productos).filter(models_producto.Productos.id == producto_id).first()
+    producto = obtener_producto_id(db, producto_id)
     if producto is None:
         return None
     payload = datos.model_dump(exclude_unset=True)
@@ -49,7 +48,7 @@ def actualizar_producto(db: Session, producto_id: int, datos: ProductoUpdate) ->
 
 def eliminar(db: Session, producto_id: int) -> bool:
     """Elimina un producto. Retorna True si existía y se eliminó, False si no existía."""
-    producto = db.query(models_producto.Productos).filter(models_producto.Productos.id == producto_id).first()
+    producto = obtener_producto_id(db, producto_id)
     if producto is None:
         return False
     db.delete(producto)

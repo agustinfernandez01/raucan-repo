@@ -1,23 +1,22 @@
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from app.schemas.categoria_producto import CategoriaProductoSimple
+
+
 class ProductoBase(BaseModel):
     nombre: str
     precio_por_kg: float
     descripcion: str | None = None
-    categoria_id: int
+    categoria_producto: CategoriaProductoSimple | None = None
+    imagen_url: str | None = None
     activo: bool = True
 
 
-class ProductoResponse(BaseModel):
+class ProductoResponse(ProductoBase):
     model_config = ConfigDict(from_attributes=True)
-
     id: int
-    nombre: str
-    precio_por_kg: float
-    descripcion: str | None = None
     categoria_id: int | None = None
-    categoria: str | None = None
-    activo: bool = True
+    categoria: str | None = None  # nombre de la categoría (desde categoria_producto)
 
     @model_validator(mode='before')
     @classmethod
@@ -33,6 +32,8 @@ class ProductoResponse(BaseModel):
                 'descripcion': data.descripcion,
                 'categoria_id': getattr(data, 'categoria_id', None),
                 'categoria': nombre_cat,
+                'categoria_producto': cat,
+                'imagen_url': getattr(data, 'imagen_url', None),
                 'activo': getattr(data, 'activo', True),
             }
         return data
@@ -52,7 +53,8 @@ class ProductoPatch(BaseModel):
     nombre: str | None = None
     precio_por_kg: float | None = None
     descripcion: str | None = None
-    categoria_id: int | None = None
+    categoria_producto: CategoriaProductoSimple | None = None
+    imagen_url: str | None = None
     activo: bool | None = None
 
 

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useCarrito } from "../../contexts/CarritoContext";
 import { getProductos } from "../../services/productos";
 import { getCategorias } from "../../services/categorias";
@@ -58,10 +59,11 @@ export default function ProductosPage() {
   const productosFiltrados = productos.filter((p) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
+    const catNombre = p.categoria ?? p.categoria_producto?.nombre ?? "";
     return (
       p.nombre.toLowerCase().includes(term) ||
       (p.descripcion?.toLowerCase().includes(term) ?? false) ||
-      ((p.categoria ?? "").toLowerCase().includes(term))
+      catNombre.toLowerCase().includes(term)
     );
   });
 
@@ -303,25 +305,29 @@ export default function ProductosPage() {
           </div>
         )}
 
+        {/* Grid productos */}
         {!loading && productosFiltrados.length > 0 && (
           <div className="grid-productos fade-in" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
             {productosFiltrados.map((prod) => {
-              const catNombre = prod.categoria ?? "";
+              const catNombre = prod.categoria ?? prod.categoria_producto?.nombre ?? "";
               const style = getCatStyle(catNombre);
               const isAdded = agregados[String(prod.id)];
               const precio = getPrecio(prod);
 
               return (
-                <div key={prod.id} className="product-card">
-                  <div style={{
-                    background: `linear-gradient(135deg, ${style.light} 0%, #f8f9ff 100%)`,
-                    height: 148,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 64,
-                    position: "relative",
-                  }}>
+                <div key={prod.id} className="product-card" style={{ display: "flex", flexDirection: "column" }}>
+                  {/* Imagen / emoji area */}
+                  <div
+                    style={{
+                      background: `linear-gradient(135deg, ${style.light} 0%, #f8f9ff 100%)`,
+                      height: 148,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 64,
+                      position: "relative",
+                    }}
+                  >
                     {prod.imagen_url ? (
                       <img
                         src={prod.imagen_url}
@@ -334,71 +340,162 @@ export default function ProductosPage() {
                     ) : (
                       <span>{style.emoji}</span>
                     )}
-                    <div style={{
-                      position: "absolute",
-                      bottom: 10,
-                      left: 12,
-                      background: "rgba(255,255,255,0.92)",
-                      borderRadius: 8,
-                      padding: "3px 9px",
-                      fontSize: 10,
-                      fontWeight: 800,
-                      color: style.color,
-                      backdropFilter: "blur(4px)",
-                    }}>
+                    {/* Badge kg */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 10,
+                        left: 12,
+                        background: "rgba(255,255,255,0.92)",
+                        borderRadius: 8,
+                        padding: "3px 9px",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: style.color,
+                        backdropFilter: "blur(4px)",
+                      }}
+                    >
                       por kg
                     </div>
                   </div>
 
-                  <div style={{ padding: "16px 16px 18px", flex: 1, display: "flex", flexDirection: "column" }}>
+                  {/* Card body */}
+                  <div
+                    style={{
+                      padding: "16px 16px 18px",
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     {catNombre && (
                       <div style={{ marginBottom: 8 }}>
-                        <span style={{
-                          background: style.light,
-                          color: style.color,
-                          borderRadius: 20,
-                          padding: "3px 10px",
-                          fontSize: 11,
-                          fontWeight: 700,
-                        }}>
+                        <span
+                          style={{
+                            background: style.light,
+                            color: style.color,
+                            borderRadius: 20,
+                            padding: "3px 10px",
+                            fontSize: 11,
+                            fontWeight: 700,
+                          }}
+                        >
                           {style.emoji} {catNombre}
                         </span>
                       </div>
                     )}
 
-                    <div style={{ fontWeight: 800, fontSize: 15, color: "#1e1b4b", marginBottom: 6, lineHeight: 1.3 }}>
+                    {/* Nombre */}
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: 15,
+                        color: "#1e1b4b",
+                        marginBottom: 6,
+                        lineHeight: 1.3,
+                      }}
+                    >
                       {prod.nombre}
                     </div>
 
+                    {/* Descripción */}
                     {prod.descripcion && (
-                      <div style={{ fontSize: 12, color: "#9ca3af", lineHeight: 1.55, flex: 1, marginBottom: 14 }}>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "#9ca3af",
+                          lineHeight: 1.55,
+                          flex: 1,
+                          marginBottom: 14,
+                        }}
+                      >
                         {prod.descripcion}
                       </div>
                     )}
 
                     <div style={{ flex: 1 }} />
 
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14 }}>
-                      <div>
-                        <div style={{ fontWeight: 900, fontSize: 20, color: "#4338ca", lineHeight: 1 }}>
+                    {/* Footer */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-end",
+                        justifyContent: "space-between",
+                        gap: 12,
+                        marginTop: 14,
+                      }}
+                    >
+                      {/* Precio */}
+                      <div style={{ minWidth: 90 }}>
+                        <div
+                          style={{
+                            fontWeight: 900,
+                            fontSize: 20,
+                            color: "#4338ca",
+                            lineHeight: 1,
+                          }}
+                        >
                           ${precio.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
                         </div>
-                        <div style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600, marginTop: 2 }}>por kg</div>
+                        <div
+                          style={{
+                            fontSize: 10,
+                            color: "#9ca3af",
+                            fontWeight: 600,
+                            marginTop: 2,
+                          }}
+                        >
+                          por kg
+                        </div>
                       </div>
-                      <button
-                        className={`add-btn${isAdded ? " added" : ""}`}
-                        onClick={() => handleAgregar(prod)}
-                        style={{
-                          background: isAdded ? "#22c55e" : "#4338ca",
-                          color: "white",
-                          borderRadius: 11,
-                          padding: "9px 15px",
-                          fontSize: 13,
-                          fontFamily: "inherit",
-                        }}
-                      >
-                        {isAdded ? "✓ Agregado" : "+ Agregar"}
-                      </button>
+
+                      {/* Acciones */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <button
+                          className={`add-btn${isAdded ? " added" : ""}`}
+                          onClick={() => handleAgregar(prod)}
+                          style={{
+                            background: isAdded ? "#22c55e" : "#4338ca",
+                            color: "white",
+                            borderRadius: 11,
+                            padding: "9px 14px",
+                            fontSize: 13,
+                            fontFamily: "inherit",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {isAdded ? "✓ Agregado" : "+ Agregar"}
+                        </button>
+                        <Link
+                          to={`/productos/${prod.id}`}
+                          style={{
+                            textDecoration: "none",
+                            borderRadius: 11,
+                            padding: "9px 12px",
+                            fontSize: 13,
+                            fontWeight: 800,
+                            fontFamily: "inherit",
+                            whiteSpace: "nowrap",
+                            background: "rgba(67,56,202,0.10)",
+                            color: "#4338ca",
+                            border: "1px solid rgba(67,56,202,0.18)",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 6,
+                            transition: "all 0.18s ease",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                            e.currentTarget.style.background = "rgba(67,56,202,0.14)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "translateY(0px)";
+                            e.currentTarget.style.background = "rgba(67,56,202,0.10)";
+                          }}
+                        >
+                          Ver más →
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

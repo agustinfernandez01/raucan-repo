@@ -41,6 +41,7 @@ elif DATABASE_URL.startswith("mysql"):
     _connect_args = {"connect_timeout": 10}
 elif DATABASE_URL.startswith("postgresql"):
     _connect_args = {}
+
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,

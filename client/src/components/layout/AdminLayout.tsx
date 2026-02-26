@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { ADMIN_ROUTES, ROUTES } from '../../constants/routes';
 
-const navItems = [
+export const navItems = [
   { to: ADMIN_ROUTES.DASHBOARD, label: 'Dashboard' },
   { to: ADMIN_ROUTES.PEDIDOS, label: 'Pedidos' },
   { to: ADMIN_ROUTES.PRODUCTOS, label: 'Productos' },
