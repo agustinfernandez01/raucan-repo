@@ -92,7 +92,7 @@ client/src/
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
-  REGISTER: '/registro',
+  REGISTER: '/register',
   PRODUCTOS: '/productos',
   PRODUCTO_DETAIL: '/productos/:id',
   CARRITO: '/carrito',

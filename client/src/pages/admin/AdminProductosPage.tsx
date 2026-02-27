@@ -1,51 +1,47 @@
+// PAGINAR --> paginacion
 import { useState, useEffect, useMemo } from 'react';
 import { getProductos } from '../../services/productos';
 import { formatPrecio } from '../../utils/formatters';
+import type { Producto } from '../../types/producto';
 
-interface Producto {
-  id: number;
-  nombre: string;
-  descripcion: string | null;
-  precio_por_kg: number;
-  categoria_id: number;
-  categoria: string | null;
-  activo: boolean;
-}
+
 
 export default function AdminProductosPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categorias, setCategorias] = useState<string[]>(['Todas las categorías']);
   const [filterCategoria, setFilterCategoria] = useState('todas');
   const [filterActivo, setFilterActivo] = useState('todos');
 
-  const categorias = useMemo(() => {
-    const cats = new Set(productos.map((p) => p.categoria).filter(Boolean));
-    return Array.from(cats) as string[];
-  }, [productos]);
+
+  useEffect(() => {
+    getProductos()
+      .then((data) => {
+        setProductos(data);
+        const cats = [...new Set(data.map((p) => p.categoria_producto?.nombre).filter(Boolean))] as string[];
+        setCategorias(cats);
+      })
+      .catch((err) => setError(err?.message ?? 'Error al cargar productos'))
+      .finally(() => setLoading(false));
+  }, []);
 
   const productosFiltrados = useMemo(() => {
-    return productos.filter((producto) => {
+    return productos.filter((p) => {
       const matchSearch =
-        producto.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (producto.descripcion?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
-      const matchCategoria = filterCategoria === 'todas' || producto.categoria === filterCategoria;
+        !searchTerm.trim() ||
+        (p.nombre?.toLowerCase().includes(searchTerm.trim().toLowerCase()) ?? false) ||
+        (p.descripcion?.toLowerCase().includes(searchTerm.trim().toLowerCase()) ?? false);
+      const matchCategoria =
+        filterCategoria === 'todas' || p.categoria_producto?.nombre === filterCategoria;
       const matchActivo =
         filterActivo === 'todos' ||
-        (filterActivo === 'activos' && producto.activo) ||
-        (filterActivo === 'inactivos' && !producto.activo);
+        (filterActivo === 'activos' && p.activo === true) ||
+        (filterActivo === 'inactivos' && p.activo === false);
       return matchSearch && matchCategoria && matchActivo;
     });
   }, [productos, searchTerm, filterCategoria, filterActivo]);
-
-  const stats = useMemo(() => {
-    const total = productos.length;
-    const activos = productos.filter((p) => p.activo).length;
-    const inactivos = productos.filter((p) => !p.activo).length;
-    const numCategorias = new Set(productos.map((p) => p.categoria)).size;
-    return { total, activos, inactivos, numCategorias };
-  }, [productos]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5] p-6">
@@ -103,13 +99,15 @@ export default function AdminProductosPage() {
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#8896fc] focus:ring-2 focus:ring-[#8896fc] focus:ring-opacity-20 transition-all outline-none bg-white"
                 >
                   <option value="todas">Todas las categorías</option>
-                  {categorias.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
+                  {categorias.map((categoria) => (
+                    <option key={categoria} value={categoria}>
+                      {categoria}
                     </option>
                   ))}
+  
                 </select>
               </div>
+
 
               {/* Estado Filter */}
               <div>
@@ -136,7 +134,7 @@ export default function AdminProductosPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Total Productos</p>
-                <p className="text-2xl font-semibold text-[#2D2D2D] mt-1">{stats.total}</p>
+                <p className="text-2xl font-semibold text-[#2D2D2D] mt-1">{productosFiltrados.length}</p>
               </div>
               <div className="p-3 bg-[#8896fc] bg-opacity-10 rounded-lg">
                 <svg className="w-6 h-6 text-[#8896fc]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +148,7 @@ export default function AdminProductosPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Activos</p>
-                <p className="text-2xl font-semibold text-green-600 mt-1">{stats.activos}</p>
+                <p className="text-2xl font-semibold text-green-600 mt-1">{productosFiltrados.filter((p) => p.activo).length}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +162,7 @@ export default function AdminProductosPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Inactivos</p>
-                <p className="text-2xl font-semibold text-red-600 mt-1">{stats.inactivos}</p>
+                <p className="text-2xl font-semibold text-red-600 mt-1">{productosFiltrados.filter((p) => !p.activo).length}</p>
               </div>
               <div className="p-3 bg-red-100 rounded-lg">
                 <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +176,11 @@ export default function AdminProductosPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Categorías</p>
-                <p className="text-2xl font-semibold text-[#ffa9e0] mt-1">{stats.numCategorias}</p>
+                <p className="text-2xl font-semibold text-[#ffa9e0] mt-1">
+                  {productosFiltrados.length > 0
+                    ? [...new Set(productosFiltrados.map((p) => p.categoria_producto?.nombre).filter(Boolean))].length
+                    : 0}
+                </p>
               </div>
               <div className="p-3 bg-[#ffa9e0] bg-opacity-10 rounded-lg">
                 <svg className="w-6 h-6 text-[#ffa9e0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,6 +231,9 @@ export default function AdminProductosPage() {
                       Categoría
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Imagen
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Estado
                     </th>
                     <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -253,13 +258,18 @@ export default function AdminProductosPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-semibold text-[#8896fc]">
-                            {formatPrecio(producto.precio_por_kg)}
+                            {formatPrecio(producto.precio_por_kg || 0)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#8896fc] text-white">
-                            {producto.categoria || 'Sin categoría'}
-                          </span>
+                          <div className="text-sm font-semibold text-[#8896fc]">
+                            {producto.categoria_producto?.nombre || 'Sin categoría'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-semibold text-[#8896fc]">
+                            {producto.imagen_url || 'Sin imagen'}
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {producto.activo ? (
@@ -308,22 +318,14 @@ export default function AdminProductosPage() {
                       </td>
                     </tr>
                   )}
+
                 </tbody>
               </table>
             </div>
           )}
 
           {/* Footer */}
-          {!loading && productosFiltrados.length > 0 && (
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">
-                  Mostrando <span className="font-medium">{productosFiltrados.length}</span> de{' '}
-                  <span className="font-medium">{productos.length}</span> productos
-                </div>
-              </div>
-            </div>
-          )}
+          {/* // paginacion */}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-export interface CategoriaProducto {
+export type CategoriaProducto = {
   id: number;
   nombre: string;
   descripcion?: string;

@@ -11,7 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import Base, engine
 from app import models  # noqa: F401 — registrar modelos con Base
-from app.routers import carrito, categoria_producto, login, mascota, pedido, productos, usuarios, stock_deposito, deposito
+from app.routers import carrito, categoria_producto, login, mascota, pedido, productos, usuarios, stock_deposito, deposito, whatsapp
+
 
 
 @asynccontextmanager

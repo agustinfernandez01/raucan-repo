@@ -20,7 +20,8 @@ export interface ProductoCreate {
   nombre: string;
   precioPorKg: number;
   descripcion?: string;
-  categoria_producto?: number;
+  /** ID de categoría (frontend) o objeto completo para la API */
+  categoria_producto?: number | { id: number; nombre: string; descripcion?: string };
   imagen_url?: string;
   activo?: boolean;
 }
