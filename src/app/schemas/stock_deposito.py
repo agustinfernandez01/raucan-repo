@@ -25,7 +25,6 @@ class StockDepositoResponse(BaseModel):
     descripcion: str
     producto: ProductoSimple
     deposito: DepositoSimple
-    nombre : str
     cantidad_producto : int 
    
 
@@ -40,14 +39,19 @@ class StockDepositoCreate(BaseModel):
 
 #ACTUALIZAR Parcial
 class StockDepositoPatch(BaseModel):
-    id_producto: ProductoSimple | None = None
-    id_deposito: DepositoSimple | None = None
+    id_producto: int | None = None
+    id_deposito: int | None = None
     cantidad_producto: int | None = None
     nombre: str | None = None
     descripcion: str | None = None
 
 #ACTUALIZAR Total
-class StockDepositoUpdate(StockDepositoBase):
+class StockDepositoUpdate(BaseModel):
+    id_producto: int
+    id_deposito: int
+    cantidad_producto: int
+    nombre: str
+    descripcion: str
     pass
 
 #ELIMINAR

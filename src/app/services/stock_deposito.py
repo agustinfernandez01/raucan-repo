@@ -3,6 +3,8 @@ from app.models.stock_deposito import StockDeposito
 from app.models.productos import Productos
 from app.models.deposito import Deposito
 from app.schemas.stock_deposito import StockDepositoResponse, StockDepositoCreate, StockDepositoUpdate, StockDepositoPatch, StockDepositoDelete
+from fastapi import HTTPException, status
+from datetime import datetime
 
 # GET
 def listar_stock(db: Session) -> list[StockDepositoResponse]:
@@ -53,19 +55,27 @@ def actualizar_deposito(
 
     deposito_existente = obtener_deposito_por_id(db, deposito_id)
     if not deposito_existente:
-        raise ValueError("No se encontró el deposito.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No se encontró el depósito."
+        )
 
-    # Validar nombre único solo si cambia
-    if deposito.nombre != deposito_existente.nombre:
+    if deposito.nombre and deposito.nombre != deposito_existente.nombre:
         existe = db.query(StockDeposito).filter(
             StockDeposito.nombre == deposito.nombre,
             StockDeposito.id != deposito_id
         ).first()
         if existe:
-            raise ValueError("El nombre del deposito ya existe.")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="El nombre del depósito ya existe."
+            )
 
-    # Update completo (evitá pisar id/fechas si existen)
-    data = deposito.model_dump(exclude={"id", "creado_en", "actualizado_en"})
+    data = deposito.model_dump(
+        exclude_unset=True,
+        exclude={"id", "creado_en", "actualizado_en"}
+    )
+
     for key, value in data.items():
         setattr(deposito_existente, key, value)
 
@@ -73,6 +83,7 @@ def actualizar_deposito(
 
     db.commit()
     db.refresh(deposito_existente)
+
     return deposito_existente
 
 # PATCH
@@ -84,23 +95,28 @@ def actualizar_deposito_parcial(
 
     deposito_existente = obtener_deposito_por_id(db, deposito_id)
     if not deposito_existente:
-        raise ValueError("No se encontró el deposito.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No se encontró el depósito."
+        )
 
     data = deposito.model_dump(exclude_unset=True, exclude={"id", "creado_en", "actualizado_en"})
 
-    # Validar nombre único solo si viene y cambia
-    if "nombre" in data and data["nombre"] != deposito_existente.nombre:
+    if deposito.nombre and deposito.nombre != deposito_existente.nombre:
         existe = db.query(StockDeposito).filter(
-            StockDeposito.nombre == data["nombre"],
+            StockDeposito.nombre == deposito.nombre,
             StockDeposito.id != deposito_id
         ).first()
         if existe:
-            raise ValueError("El nombre del deposito ya existe.")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="El nombre del depósito ya existe."
+            )
 
     for key, value in data.items():
         setattr(deposito_existente, key, value)
 
-    deposito_existente.actualizado_en = datetime.now()
+    deposito_existente.actualizado_en = datetime.now(timezone.utc)
     db.commit()
     db.refresh(deposito_existente)
     return deposito_existente
