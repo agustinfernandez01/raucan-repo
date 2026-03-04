@@ -1,7 +1,7 @@
 import { apiFetch } from "./api";
-import type { Deposito } from "../types/deposito";
+import type { IDeposito } from "../types/deposito";
 
-export async function getDepositos(): Promise<Deposito[]> {
-    const response = await apiFetch<Deposito[]>("/depositos/get") as Deposito[];
+export async function getDepositos(): Promise<IDeposito[]> {
+    const response = await apiFetch<IDeposito[]>("/depositos/get") as IDeposito[];
     return response;
 }
