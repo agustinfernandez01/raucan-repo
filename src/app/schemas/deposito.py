@@ -3,26 +3,40 @@ from datetime import datetime
 from typing import Optional
 
 class Deposito(BaseModel):
-    id : int
+    id: int
     nombre: str
     descripcion: str
     direccion: str
     ubicacion: str
     estado: bool
 
-class DepositoResponse(Deposito):
-    pass
+class DepositoResponse(BaseModel):
+    id: int
+    nombre: str
+    descripcion: str
+    direccion: str
+    ubicacion: str
+    estado: bool
 
-class DepositoCreate(Deposito):
-    pass
+
+class DepositoCreate(BaseModel):
+    nombre: str
+    descripcion: str
+    direccion: str
+    ubicacion: str
+    estado: bool
 
 #Actualizacion Total
-class DepositoUpdate(Deposito):
-    actualizado_en: datetime
+class DepositoUpdate(BaseModel):
+    nombre: Optional[str]
+    descripcion: Optional[str]
+    direccion: Optional[str] 
+    ubicacion: Optional[str] 
+    estado: Optional[bool] 
+    actualizado_en: Optional[datetime] 
 
 #Actualizacion Parcial
 class DepositoPatch(BaseModel):
-    id : Optional[int] = None
     nombre: Optional[str] = None
     descripcion: Optional[str] = None
     direccion: Optional[str] = None

@@ -12,7 +12,7 @@ class StockDeposito(Base):
     id_deposito = Column(Integer, ForeignKey("deposito.id"), nullable=False)
     nombre = Column(String(255), nullable=False)
     descripcion = Column(String(255), nullable=True)
-    cantidad_producto = Column(Float, nullable=False, default=func.now()) 
+    cantidad_producto = Column(Float, nullable=False, default=0) 
     actualizado_en = Column(DateTime, nullable=False, default=func.now())
     #relaciones
     producto = relationship("Productos")

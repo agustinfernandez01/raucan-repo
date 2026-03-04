@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
 
 import app.models.productos as models_producto
+from app.models.categoria_producto import CategoriaProducto
 from app.schemas.productos import ProductoCreate, ProductoResponse, ProductoUpdate
 
 
@@ -24,7 +25,17 @@ def obtener_producto_id(db: Session, producto_id: int):
 
 def crear_producto(db: Session, datos: ProductoCreate) -> ProductoResponse:
     """Crea un nuevo producto. Retorna el producto creado."""
-    producto = models_producto.Productos(**datos.model_dump())
+    payload = datos.model_dump(exclude={"categoria_producto", "imagen_url"})
+    if datos.categoria_producto:
+        nombre = (datos.categoria_producto.nombre or "").strip()
+        if nombre:
+            cat = db.query(CategoriaProducto).filter(CategoriaProducto.nombre == nombre).first()
+            if cat is None:
+                cat = CategoriaProducto(nombre=nombre, descripcion=datos.categoria_producto.descripcion)
+                db.add(cat)
+                db.flush()
+            payload["categoria_id"] = cat.id
+    producto = models_producto.Productos(**payload)
     db.add(producto)
     db.commit()
     db.refresh(producto)
@@ -36,7 +47,18 @@ def actualizar_producto(db: Session, producto_id: int, datos: ProductoUpdate) ->
     producto = obtener_producto_id(db, producto_id)
     if producto is None:
         return None
-    payload = datos.model_dump(exclude_unset=True)
+    payload = datos.model_dump(exclude_unset=True, exclude={"categoria_producto", "imagen_url"})
+    if datos.categoria_producto is not None:
+        nombre = (datos.categoria_producto.nombre or "").strip()
+        if nombre:
+            cat = db.query(CategoriaProducto).filter(CategoriaProducto.nombre == nombre).first()
+            if cat is None:
+                cat = CategoriaProducto(nombre=nombre, descripcion=datos.categoria_producto.descripcion)
+                db.add(cat)
+                db.flush()
+            producto.categoria_id = cat.id
+        else:
+            producto.categoria_id = None
     for key, value in payload.items():
         setattr(producto, key, value)
     db.commit()

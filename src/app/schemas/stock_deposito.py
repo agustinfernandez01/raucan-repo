@@ -10,21 +10,33 @@ class StockDepositoBase(BaseModel):
     id: int
     nombre: str
     descripcion: str
-    cantidad_producto: float
+    producto: ProductoSimple
+    deposito: DepositoSimple
+    nombre : str
+    descripcion : str
+    cantidad_producto : int 
+    actualizado_en : datetime
 
 
 #RESPUESTA
-class StockDepositoResponse(StockDepositoBase):
+class StockDepositoResponse(BaseModel):
     id: int
-    actualizado_en: datetime | None
+    nombre: str
+    descripcion: str
     producto: ProductoSimple
     deposito: DepositoSimple
-    model_config = ConfigDict(from_attributes=True)
+    nombre : str
+    cantidad_producto : int 
+   
 
 #CREAR
-class StockDepositoCreate(StockDepositoBase):
+class StockDepositoCreate(BaseModel):
+    nombre: str
+    descripcion: str
     id_producto: int
     id_deposito: int
+    cantidad_producto: int
+
 
 #ACTUALIZAR Parcial
 class StockDepositoPatch(BaseModel):

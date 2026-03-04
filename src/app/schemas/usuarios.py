@@ -14,14 +14,9 @@ class UsuarioBase(BaseModel):
     email: EmailStr
     telefono: str = Field(min_length=1, max_length=255)
 
-    # datos de seguridad
-    rol: str = Field(min_length=1, max_length=255)
-    activo: bool = Field(default=True)
-
 #CREAR USUARIO
 class UsuarioCreate(UsuarioBase):
     password: str = Field(min_length=8, max_length=255)
-    creado_en: datetime = Field(default_factory=datetime.now)
 
 #ACTUALIZAR USUARIO (PARCIAL)
 class UsuarioPatch(BaseModel):
@@ -30,8 +25,6 @@ class UsuarioPatch(BaseModel):
     apellido: Optional[str] = Field(default=None, min_length=1, max_length=255)
     email: Optional[EmailStr] = Field(default=None)
     telefono: Optional[str] = Field(default=None, min_length=1, max_length=255)
-    rol: Optional[str] = Field(default=None, min_length=1, max_length=255)
-    activo: Optional[bool] = Field(default=None)    
     password: Optional[str] = Field(default=None, min_length=8, max_length=255)
 
 #ACTUALIZAR USUARIO (TODO)

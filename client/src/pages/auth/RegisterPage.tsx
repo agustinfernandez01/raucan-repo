@@ -15,7 +15,6 @@ const Register: React.FC = () => {
     apellido: '',
     email: '',
     telefono: '',
-    rol: 'usuario',
     password: '',
     confirmPassword: ''
   });
@@ -50,7 +49,6 @@ const Register: React.FC = () => {
       apellido: formData.apellido,
       email: formData.email,
       telefono: formData.telefono,
-      rol: formData.rol,
       password: formData.password
     };
 
@@ -68,7 +66,6 @@ const Register: React.FC = () => {
         apellido: '',
         email: '',
         telefono: '',
-        rol: 'usuario',
         password: '',
         confirmPassword: ''
       });
@@ -151,18 +148,6 @@ const Register: React.FC = () => {
                 className={inputClass}
                 placeholder="Teléfono"
               />
-
-              <select
-                name="rol"
-                value={formData.rol}
-                onChange={handleChange}
-                required
-                className={inputClass + ' bg-white'}
-              >
-                <option value="usuario">Usuario</option>
-                <option value="administrador">Administrador</option>
-                <option value="moderador">Moderador</option>
-              </select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

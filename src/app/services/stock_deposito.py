@@ -5,12 +5,12 @@ from app.models.deposito import Deposito
 from app.schemas.stock_deposito import StockDepositoResponse, StockDepositoCreate, StockDepositoUpdate, StockDepositoPatch, StockDepositoDelete
 
 # GET
-def listar_depositos(db: Session) -> list[StockDepositoResponse]:
-    """Lista todos los depositos."""
-    lista_depositos = db.query(StockDeposito).options(selectinload(StockDeposito.deposito),selectinload(StockDeposito.producto)).all()
-    if not lista_depositos:
-        raise ValueError("No se encontraron depositos.")
-    return lista_depositos
+def listar_stock(db: Session) -> list[StockDepositoResponse]:
+    """Lista todos los stocks."""
+    lista_stock = db.query(StockDeposito).options(selectinload(StockDeposito.deposito),selectinload(StockDeposito.producto)).all()
+    if not lista_stock:
+        raise ValueError("No se encontraron stocks.")
+    return lista_stock
 
 # GET BY ID
 def obtener_deposito_por_id(db: Session, id: int) -> StockDepositoResponse:
@@ -21,28 +21,28 @@ def obtener_deposito_por_id(db: Session, id: int) -> StockDepositoResponse:
     return deposito
 
 # CREATE
-def crear_deposito(db: Session, deposito: StockDepositoCreate) -> StockDepositoResponse:
+def crear_deposito(db: Session, payload: StockDepositoCreate) -> StockDepositoResponse:
     """Crea un nuevo deposito."""
     #validar que el producto y el deposito existan
-    producto = db.query(Productos).filter(Productos.id == deposito.id_producto).first()
-    if not producto:
+    check_producto = db.query(Productos).filter(Productos.id == payload.id_producto).first()
+    if not check_producto:
         raise ValueError("No se encontró el producto.")
-    deposito = db.query(Deposito).filter(Deposito.id == deposito.id_deposito).first()
-    if not deposito:
+    check_deposito = db.query(Deposito).filter(Deposito.id == payload.id_deposito).first()
+    if not check_deposito:
         raise ValueError("No se encontró el deposito.")
 
     #crear el deposito
-    nuevo_deposito = StockDeposito(
-        id_producto=deposito.id_producto,
-        id_deposito=deposito.id_deposito,
-        nombre=deposito.nombre,
-        cantidad_producto=deposito.cantidad_producto,
-        descripcion=deposito.descripcion,
+    nuevo_stock = StockDeposito(
+        id_producto=payload.id_producto,
+        id_deposito=payload.id_deposito,
+        nombre=payload.nombre,
+        cantidad_producto=payload.cantidad_producto,
+        descripcion=payload.descripcion,
     )
-    db.add(nuevo_deposito)
+    db.add(nuevo_stock)
     db.commit()
-    db.refresh(nuevo_deposito)
-    return nuevo_deposito
+    db.refresh(nuevo_stock)
+    return nuevo_stock
 
 # UPDATE COMPLETO
 def actualizar_deposito(

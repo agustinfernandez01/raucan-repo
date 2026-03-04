@@ -14,7 +14,7 @@ class Deposito(Base):
     direccion = Column(String(255), nullable=False)
     ubicacion = Column(String(255), nullable=False)
     estado = Column(Boolean, default=True)
-    actualizado_en = Column(DateTime, nullable=False)
+    actualizado_en = Column(DateTime, nullable=True)
     
 
 

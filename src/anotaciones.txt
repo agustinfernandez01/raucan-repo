@@ -36,5 +36,26 @@ post - listo
 put - listo
 patch - listo
 
-productos
-get -
+
+{
+"nombre":"Deposito 1",
+"descripcion": "Deposito de productos",
+"direccion": "Av San Martin 1234",
+"ubicacion": "Buenos Aires",
+"cantidad_producto": 5,
+"id_producto":9,
+"id_deposito": 1
+}
+
+lunes 2:
+
+terminar con front de depositos (stock_deposito y deposito)
+
+
+arreglar:
+
+productos:
+
+filtro de activo en inactivo
+patch de productos
+agregar boton eliminar en usuarios

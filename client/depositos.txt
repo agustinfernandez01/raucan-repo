@@ -1,7 +1,7 @@
-import { getDepositos } from "../../services/deposito";
-import type { IDeposito } from "../../types/deposito";
-import { useEffect, useState , useMemo } from "react";
+// DepositosStockPage.tsx
+// SOLO ESTÉTICA. Conectás vos la lógica (fetch, handlers, etc.).
 
+import { useMemo, useState } from "react";
 
 type DepositoUI = {
   id: number | string;
@@ -39,10 +39,28 @@ function safeText(v?: string | null) {
   return v && v.trim().length ? v : "-";
 }
 
-
-export default function AdminStockPage() {
+export default function DepositosStockPage() {
   // ✅ PLACEHOLDERS (vos lo conectás a tu service)
-  const [depositos , setDepositos] = useState<IDeposito[]>();
+  const [depositos] = useState<DepositoUI[]>([
+    {
+      id: 1,
+      nombre: "Deposito 1",
+      descripcion: "Deposito de productos",
+      direccion: "Av San Martin 1234",
+      ubicacion: "Buenos Aires",
+      estado: true,
+      actualizado_en: null,
+    },
+    {
+      id: 2,
+      nombre: "Deposito 2",
+      descripcion: "Deposito de alimento",
+      direccion: "Av Avellaneda 123",
+      ubicacion: "Tucuman",
+      estado: true,
+      actualizado_en: null,
+    },
+  ]);
 
   const [stockRows] = useState<StockDepositoUI[]>([
     // ejemplo (placeholder)
@@ -78,19 +96,62 @@ export default function AdminStockPage() {
   const [loading] = useState(false); // placeholder
   const [error, setError] = useState<string | null>(null);
 
+  // selección depósito
+  const [selectedDepositoId, setSelectedDepositoId] = useState<string>(
+    String(depositos[0]?.id ?? "")
+  );
+
   // filtros
   const [busqueda, setBusqueda] = useState("");
   const [filterStock, setFilterStock] = useState<"todos" | "con_stock" | "sin_stock">("todos");
   const [filterUpdated, setFilterUpdated] = useState<"todos" | "actualizados" | "sin_fecha">("todos");
 
+  const depositoSeleccionado = useMemo(() => {
+    return depositos.find((d) => String(d.id) === String(selectedDepositoId)) ?? null;
+  }, [depositos, selectedDepositoId]);
 
+  const stockDelDeposito = useMemo(() => {
+    return stockRows.filter((r) => String(r.id_deposito) === String(selectedDepositoId));
+  }, [stockRows, selectedDepositoId]);
 
-    useEffect(() => {
-      const depositosResponse = getDepositos();
+  const filtrados = useMemo(() => {
+    const q = busqueda.toLowerCase().trim();
 
-    },[]);
+    return stockDelDeposito.filter((r) => {
+      const matchSearch =
+        !q ||
+        r.nombre.toLowerCase().includes(q) ||
+        String(r.id_producto).toLowerCase().includes(q) ||
+        (r.descripcion ?? "").toLowerCase().includes(q);
 
-   
+      const matchStock =
+        filterStock === "todos" ||
+        (filterStock === "con_stock" && (r.cantidad_producto ?? 0) > 0) ||
+        (filterStock === "sin_stock" && (r.cantidad_producto ?? 0) <= 0);
+
+      const matchUpdated =
+        filterUpdated === "todos" ||
+        (filterUpdated === "actualizados" && !!r.actualizado_en) ||
+        (filterUpdated === "sin_fecha" && !r.actualizado_en);
+
+      return matchSearch && matchStock && matchUpdated;
+    });
+  }, [stockDelDeposito, busqueda, filterStock, filterUpdated]);
+
+  const stats = useMemo(() => {
+    const totalItems = stockDelDeposito.length;
+    const conStock = stockDelDeposito.filter((r) => (r.cantidad_producto ?? 0) > 0).length;
+    const sinStock = stockDelDeposito.filter((r) => (r.cantidad_producto ?? 0) <= 0).length;
+    const totalCantidad = stockDelDeposito.reduce((acc, r) => acc + (r.cantidad_producto ?? 0), 0);
+
+    // último actualizado (simple, como string)
+    const fechas = stockDelDeposito
+      .map((r) => r.actualizado_en)
+      .filter(Boolean) as string[];
+    const lastUpdated = fechas.length ? fechas.sort().at(-1) : null;
+
+    return { totalItems, conStock, sinStock, totalCantidad, lastUpdated };
+  }, [stockDelDeposito]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#e8e8ec] to-[#dfe0e5] p-6">
@@ -132,7 +193,17 @@ export default function AdminStockPage() {
                 <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
                   Depósito
                 </label>
-
+                <select
+                  value={selectedDepositoId}
+                  onChange={(e) => setSelectedDepositoId(e.target.value)}
+                  className={selectClass}
+                >
+                  {depositos.map((d) => (
+                    <option key={String(d.id)} value={String(d.id)}>
+                      {d.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Search */}
@@ -209,26 +280,26 @@ export default function AdminStockPage() {
 
                   <div>
                     <div className="text-sm font-medium text-[#2D2D2D]">
-                      {"depositoSeleccionado?.nombre ?? —"}
+                      {depositoSeleccionado?.nombre ?? "—"}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {"safeText(depositoSeleccionado?.descripcion)"} • {"safeText(depositoSeleccionado?.ubicacion)"} •   
+                      {safeText(depositoSeleccionado?.descripcion)} • {safeText(depositoSeleccionado?.ubicacion)}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                 
+                  {depositoSeleccionado?.estado !== false ? (
                     <span className={`${badgeBase} bg-green-100 text-green-800`}>
                       Activo
                     </span>
-               
+                  ) : (
                     <span className={`${badgeBase} bg-red-100 text-red-800`}>
                       Inactivo
                     </span>
-                
+                  )}
                   <span className={`${badgeBase} bg-gray-100 text-gray-700`}>
-                    Dirección: 
+                    Dirección: {safeText(depositoSeleccionado?.direccion)}
                   </span>
                 </div>
               </div>
@@ -243,7 +314,7 @@ export default function AdminStockPage() {
               <div>
                 <p className="text-gray-500 text-sm">Ítems en stock</p>
                 <p className="text-2xl font-semibold text-[#2D2D2D] mt-1">
-            
+                  {stats.totalItems}
                 </p>
               </div>
               <div className="p-3 bg-[#8896fc] bg-opacity-10 rounded-lg">
@@ -259,7 +330,7 @@ export default function AdminStockPage() {
               <div>
                 <p className="text-gray-500 text-sm">Con stock</p>
                 <p className="text-2xl font-semibold text-green-600 mt-1">
-         
+                  {stats.conStock}
                 </p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -275,7 +346,7 @@ export default function AdminStockPage() {
               <div>
                 <p className="text-gray-500 text-sm">Sin stock</p>
                 <p className="text-2xl font-semibold text-red-600 mt-1">
-
+                  {stats.sinStock}
                 </p>
               </div>
               <div className="p-3 bg-red-100 rounded-lg">
@@ -291,10 +362,10 @@ export default function AdminStockPage() {
               <div>
                 <p className="text-gray-500 text-sm">Cantidad total</p>
                 <p className="text-2xl font-semibold text-[#ffa9e0] mt-1">
-
+                  {formatNumber(stats.totalCantidad)}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-
+                  Últ. act: {stats.lastUpdated ?? "—"}
                 </p>
               </div>
               <div className="p-3 bg-[#ffa9e0] bg-opacity-10 rounded-lg">
@@ -356,7 +427,101 @@ export default function AdminStockPage() {
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                 
+                  {filtrados.length > 0 ? (
+                    filtrados.map((row) => (
+                      <tr
+                        key={String(row.id)}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-[#8896fc] bg-opacity-10 rounded-full flex items-center justify-center">
+                              <span className="text-[#8896fc] font-semibold">
+                                {row.nombre?.charAt(0)?.toUpperCase() || "?"}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium text-[#2D2D2D]">
+                                {row.nombre}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                ID producto: {row.id_producto}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">
+                            {safeText(row.descripcion)}
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            Stock ID: {row.id}
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4 text-right">
+                          <span
+                            className={`${badgeBase} ${
+                              row.cantidad_producto > 0
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                            title={row.cantidad_producto > 0 ? "Con stock" : "Sin stock"}
+                          >
+                            {formatNumber(row.cantidad_producto)}
+                          </span>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <span className={`${badgeBase} bg-gray-100 text-gray-700`}>
+                            {row.actualizado_en ?? "NULL"}
+                          </span>
+                        </td>
+
+                        <td className="px-6 py-4 text-right text-sm font-medium">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => {}}
+                              className="text-[#8896fc] hover:text-[#ffa9e0] transition-colors p-2 hover:bg-[#8896fc] hover:bg-opacity-10 rounded-lg"
+                              title="Ver / detalle (placeholder)"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            </button>
+
+                            <button
+                              onClick={() => {}}
+                              className="text-[#8896fc] hover:text-[#ffa9e0] transition-colors p-2 hover:bg-[#8896fc] hover:bg-opacity-10 rounded-lg"
+                              title="Editar cantidad (placeholder)"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center justify-center">
+                          <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V7a2 2 0 00-2-2h-4l-2-2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4" />
+                          </svg>
+                          <p className="text-gray-500 text-lg font-medium">
+                            No se encontró stock para este depósito
+                          </p>
+                          <p className="text-gray-400 text-sm mt-1">
+                            Probá cambiando los filtros o agregá stock
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -367,8 +532,8 @@ export default function AdminStockPage() {
             <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500">
-                  Mostrando <span className="font-medium"></span> de{" "}
-                  <span className="font-medium"></span> registros del depósito
+                  Mostrando <span className="font-medium">{filtrados.length}</span> de{" "}
+                  <span className="font-medium">{stockDelDeposito.length}</span> registros del depósito
                 </div>
 
                 {/* acciones footer (placeholder) */}

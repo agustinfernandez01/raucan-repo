@@ -4,6 +4,11 @@ export type CategoriaProducto = {
   descripcion?: string;
 }
 
+export interface CategoriaProductoSimple {
+  id: number;
+  nombre: string;
+}
+
 export function normalizeCategoriaProducto(raw: Record<string, unknown>): CategoriaProducto {
   return {
     id: Number(raw.id),

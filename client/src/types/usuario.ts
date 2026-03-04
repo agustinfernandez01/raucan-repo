@@ -7,10 +7,12 @@ export interface Usuario {
   apellido?: string;
   telefono: string;
   telefono_whatsapp?: string;
-  rol?: string;
-  activo?: boolean;
 }
 
-export interface UsuarioCreate extends Usuario {
+export interface UsuarioCreate {
+  email: string;
+  nombre: string;
+  apellido?: string;
+  telefono: string;
   password: string;
 }

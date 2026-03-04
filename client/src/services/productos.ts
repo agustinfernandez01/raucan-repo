@@ -1,5 +1,5 @@
 import { apiFetch } from './api';
-import type { Producto, ProductoCreate, ProductoUpdate } from '../types/producto';
+import type { Producto, ProductoCreate, ProductoPatch } from '../types/producto';
 
 // por categoria o todos
 export async function getProductos(categoria_producto_id?: number): Promise<Producto[]> {
@@ -21,16 +21,16 @@ export async function getProductoById(id: number): Promise<Producto> {
 // crear - envía formato API (snake_case)
 export async function crearProducto(producto: ProductoCreate): Promise<Producto> {
   const cat = producto.categoria_producto;
-  const categoria_producto =
+  const categoriaProducto =
     typeof cat === 'object' && cat != null
-      ? { id: cat.id, nombre: cat.nombre, descripcion: cat.descripcion ?? null }
+      ? { nombre: cat.nombre ?? undefined, descripcion: cat.descripcion ?? undefined }
       : null;
   const payload = {
     nombre: producto.nombre,
-    precio_por_kg: producto.precioPorKg,
-    descripcion: producto.descripcion ?? null,
-    categoria_producto,
-    imagen_url: producto.imagen_url ?? null,
+    precio_por_kg: producto.precio_por_kg,
+    descripcion: producto.descripcion ?? undefined,
+    categoria_producto: categoriaProducto,
+    imagen_url: producto.imagen_url ?? undefined,
     activo: producto.activo ?? true,
   };
   const data = await apiFetch<Producto>('/productos/postproductos', {
@@ -41,10 +41,23 @@ export async function crearProducto(producto: ProductoCreate): Promise<Producto>
 }
 
 // actualizar
-export async function actualizarProducto(id: number, producto: ProductoUpdate): Promise<Producto> {
+export async function actualizarProducto(id: number, producto: ProductoPatch): Promise<Producto> {
+  const cat = producto.categoria_producto;
+  const categoriaProducto =
+    typeof cat === 'object' && cat != null
+      ? { nombre: cat.nombre ?? undefined, descripcion: cat.descripcion ?? undefined }
+      : null;
+  const payload = {
+    nombre: producto.nombre,
+    precio_por_kg: producto.precio_por_kg,
+    descripcion: producto.descripcion ?? undefined,
+    categoria_producto: categoriaProducto,
+    imagen_url: producto.imagen_url ?? undefined,
+    activo: producto.activo ?? true,
+  };
   const data = await apiFetch<Producto>(`/productos/patchproductos/${id}`, {
     method: 'PATCH',
-    body: JSON.stringify(producto),
+    body: JSON.stringify(payload),
   });
   return data;
 }

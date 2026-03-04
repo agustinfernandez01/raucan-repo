@@ -8,9 +8,9 @@ router = APIRouter()
 
 # listar todos los depositos (GET)
 @router.get("/get", response_model=list[StockDepositoResponse])
-def listar_depositos(db: Session = Depends(get_db)):
+def traer_stocks(db: Session = Depends(get_db)):
     try:
-        return svc_stock_deposito.listar_depositos(db)
+        return svc_stock_deposito.listar_stock(db)
     except Exception:
         raise HTTPException(
             status_code=500,
@@ -30,9 +30,9 @@ def obtener_inventario_por_id(id: int, db: Session = Depends(get_db)):
 
 # crear un deposito (POST)
 @router.post("/create", response_model=StockDepositoResponse)
-def crear_deposito(deposito: StockDepositoCreate, db: Session = Depends(get_db)):
+def crear_deposito(payload: StockDepositoCreate, db: Session = Depends(get_db)):
     try:
-        return svc_stock_deposito.crear_deposito(db, deposito)
+        return svc_stock_deposito.crear_deposito(db, payload)
     except Exception:
         raise HTTPException(
             status_code=500,

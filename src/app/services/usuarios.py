@@ -56,7 +56,7 @@ def create_usuario(db: Session, usuario: UsuarioCreate):
         password_hash=hash_password(usuario.password), 
         telefono=usuario.telefono,
         rol="user",
-        activo=usuario.activo,
+        activo=True,
         creado_en=datetime.now(),
     )
 
@@ -116,8 +116,6 @@ def update_usuario(db: Session, usuario_id: int, usuario: UsuarioUpdate) -> Usua
     db_usuario.email = usuario.email
     db_usuario.password_hash = hash_password(usuario.password)
     db_usuario.telefono = usuario.telefono
-    db_usuario.rol = usuario.rol
-    db_usuario.activo = usuario.activo
     db_usuario.actualizado_en = datetime.now()
     db.commit()
     db.refresh(db_usuario)

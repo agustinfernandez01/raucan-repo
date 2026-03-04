@@ -1,7 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
 class CategoriaProductoBase(BaseModel):
-    id: int
     nombre: str
     descripcion: str | None = None
 
@@ -16,7 +15,6 @@ class CategoriaProductoResponse(CategoriaProductoBase):
         from_attributes = True
 
 class CategoriaProductoSimple(CategoriaProductoBase):
-    id: int
     nombre: str
     descripcion: str | None = None
     model_config = ConfigDict(from_attributes=True)

@@ -5,6 +5,7 @@ from app.db import get_db
 from app.services import deposito as svc_deposito
 #schemas
 from app.schemas.deposito import DepositoResponse, DepositoCreate, DepositoUpdate, DepositoPatch
+import traceback
 
 router = APIRouter()
 
@@ -35,11 +36,14 @@ def obtener_deposito(deposito_id: int, db: Session = Depends(get_db)):
 def post_deposito(deposito: DepositoCreate, db: Session = Depends(get_db)):
     try:
         return svc_deposito.crear_deposito(db, deposito)
-    except Exception:
-        raise HTTPException(
-            status_code=500,
-            detail="Error al crear el depósito"
-        )
+
+    except HTTPException as e:
+        # si el service ya tiró un error controlado, lo respetamos
+        raise e
+
+    except Exception as e:
+        print(traceback.format_exc())  # <-- te muestra el error real en consola
+        raise HTTPException(status_code=500, detail=str(e))
 
 # actualizar un deposito totalmente (PUT)
 @router.put("/put/{deposito_id}", response_model=DepositoResponse)

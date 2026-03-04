@@ -33,7 +33,7 @@ function getCatStyle(nombre: string) {
 }
 
 function getPrecio(prod: Producto): number {
-  return prod.precioPorKg ?? prod.precio_por_kg ?? 0;
+  return prod.precio_por_kg ?? prod.precio_por_kg ?? 0;
 }
 
 export default function ProductosPage() {
